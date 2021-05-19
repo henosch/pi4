@@ -3,13 +3,13 @@
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
 ################
-#     set timezone       #
+# set timezone #
 ################
 
 timedatectl set-timezone Europe/Berlin
 
 ##########
-#      vi fix     #
+# vi fix #
 ##########
 
 cat <<EOF > /home/mike/.vimrc
@@ -32,7 +32,7 @@ EOF
 
 
 ###############
-#     wlan config       #
+# wlan config #
 ###############
 
 cat <<EOF >> /etc/network/interfaces
@@ -66,7 +66,7 @@ systemctl start wpa_supplicant@wlan0.service
 
 
 ###############
-#    needed repo      #
+# needed repo #
 ###############
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
@@ -93,7 +93,7 @@ apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
 
 
 #####################
-#   recommend package       #
+# recommend package #
 #####################
 
 # Newer kernel available
