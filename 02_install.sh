@@ -481,3 +481,52 @@ pihole -g
 sleep 10
 /etc/init.d/pihole-FTL restart
 EOF
+
+
+###############
+# install rpi monitor #
+###############
+
+# apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
+# wget http://goo.gl/vewCLL -O /etc/apt/sources.list.d/rpimonitor.list
+
+apt install rpimonitor
+conf_file="/etc/rpimonitor/data.conf"
+cp $conf_file /etc/rpimonitor/data.conf_org
+sed -i 's/#inextcloudlude=\/etc\/rpimonitor\/template\/network.conf/inextcloudlude=\/etc\/rpimonitor\/template\/network.conf/g' $conf_file
+cp /usr/share/rpimonitor/web/addons/top3/top3.cron /etc/cron.d/top3
+sed -i 's/#web.addons.5.name\=Top3/web.addons.5.name\=Top3/g' $conf_file
+sed -i 's/#web.addons.5.addons\=top3/web.addons.5.addons\=top3/g' $conf_file
+first="s/#web.status.1.content.1.line.4\=InsertHTML(\"\/addons\/top3\/top3.html\")/"
+second="web.status.1.content.1.line.4\=InsertHTML(\"\/addons\/top3\/top3.html\")/g "
+sed -i $first$second /etc/rpimonitor/template/cpu.conf
+
+# enable all network settings
+sed -i '12,42s/^#//' /etc/rpimonitor/template/network.conf
+
+# disable intern webserver
+sed -i 's/^#daemon.noserver\=1/daemon.noserver\=1/g' /etc/rpimonitor/daemon.conf
+
+cat <<EOF >> /etc/cron.d/rpimonitor
+# run at 03:05 to update local repository database
+05 03 * * * root /usr/bin/apt-get update > /dev/null 2>&1
+ 
+# run at 03:10 to update status
+10 03 * * * root /usr/share/rpimonitor/scripts/updatePackagesStatus.pl
+EOF
+
+cat <<EOF >> /etc/cron.d/top3
+* * * * * root cd /usr/share/rpimonitor/web/addons/top3; ./top3 > top3.html
+EOF
+
+/etc/init.d/rpimonitor update
+/etc/init.d/rpimonitor install_auto_package_status_update
+
+
+#############
+# install webmin #
+#############
+
+apt install libauthen-pam-perl apt-show-versions libio-pty-perl
+wget http://prdownloads.sourceforge.net/webadmin/webmin_1.974_all.deb
+dpkg --install webmin_1.974_all.deb
