@@ -168,3 +168,80 @@ cat <<EOF > /var/www/html/php_test.php
 phpinfo();
 ?>
 EOF
+
+
+############### 
+#   jail chroot            #
+###############
+
+apt install build-essential autoconf automake libtool flex bison debhelper binutils
+wget https://olivier.sessink.nl/jailkit/jailkit-2.21.tar.gz
+tar xvfz jailkit-2.21.tar.gz
+cd jailkit-2.21
+echo 5 > debian/compat
+./debian/rules binary
+cd ..
+dpkg -i jailkit_2.21-1_*.deb
+mkdir /home/jail
+chown root:root /home/jail
+chmod 0755 /home/jail
+/usr/sbin/jk_init -j /home/jail jk_lsh
+/usr/sbin/jk_init -j /home/jail sftp
+/usr/sbin/jk_init -j /home/jail scp
+/usr/sbin/jk_init -j /home/jail ssh
+/usr/sbin/jk_init -j /home/jail basicshell editors extendedshell netutils
+/usr/sbin/jk_cp -j /home/jail/ /usr/bin/id
+/usr/sbin/jk_cp -j /home/jail/ /usr/bin/strace
+/usr/sbin/jk_cp -j /home/jail/ /usr/bin/whois
+useradd -m julian
+passwd julian
+/usr/sbin/jk_jailuser -j /home/jail -s /usr/sbin/jk_lsh -m julian
+/usr/sbin/jk_jailuser -m -j /home/jail julian
+#sed -i 's/julian/#julian/g' /home/jail/etc/passwd
+echo "root:x:0:0:root:/root:/bin/bash" > /home/jail/etc/passwd
+echo "julian:x:1002:1002:,,,:/home/julian:/bin/bash" >> /home/jail/etc/passwd
+rm -rf /home/jail/etc/jailkit/ 
+
+
+############
+#   influxdb        #
+############
+
+# with kali = apt install influxdb-client influxdb
+
+# curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+# echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+
+apt install influxdb
+service influxdb start
+/bin/systemctl daemon-reload
+/bin/systemctl enable influxdb
+
+influx
+CREATE DATABASE influxdb
+quit
+
+cp /etc/influxdb/influxdb.conf /etc/influxdb/influxdb.conf_org
+sed -i 's/\[\[collectd\]\]/#\[\[collectd\]\]/g' /etc/influxdb/influxdb.conf
+cat <<EOF >> /etc/influxdb/influxdb.conf
+[[collectd]]
+  enabled = true
+  bind-address = "127.0.0.1:25826"
+  database = "influxdb"
+  typesdb = "/usr/share/collectd/types.db"
+EOF
+
+
+###########
+#   grafana     #
+###########
+
+# echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+# wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+
+apt install grafana
+
+service grafana-server start
+/bin/systemctl daemon-reload
+/bin/systemctl enable grafana-server
+update-rc.d grafana-server defaults
