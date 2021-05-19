@@ -18,7 +18,7 @@ cat <<EOF > /home/mike/.vimrc
 :set nocompatible
 :set backspace=2
 EOF
-syntax on
+# syntax on
 
 chown mike:mike /home/mike/.vimrc
 
@@ -28,7 +28,7 @@ cat <<EOF > /root/.vimrc
 :set nocompatible
 :set backspace=2
 EOF
-syntax on
+# syntax on
 
 
 ###############
@@ -62,7 +62,7 @@ systemctl enable wpa_supplicant@wlan0.service
 systemctl start wpa_supplicant@wlan0.service
 
 # config test
-wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+# wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 
 
 ###############
@@ -101,9 +101,7 @@ apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
 
 apt update -y && apt upgrade -y
 dpkg-reconfigure bash
-reboot
-ssh pi
-sudo -i
+
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 apt install apache2 mariadb-server zip unzip build-essential
@@ -116,11 +114,13 @@ apt install libmariadb-dev-compat libmariadb-dev libapache2-mod-security2 \
 apt install awstats libgeo-ip-perl libgeo-ipfree-perl
   
 # config wajig
-sudo ln -s /usr/bin/wajig /usr/bin/apt2
-  
+ln -s /usr/bin/wajig /usr/bin/apt2
+
+
 # config byobu
-sudo sed -i 's/exec "\$SHELL"/exec "\$SHELL" \-\-login/g'  /usr/bin/byobu-shell
-sudo sed -i 's/exec \/bin\/sh/exec \/bin\/bash \-\-login/g'  /usr/bin/byobu-shell
+sed -i 's/exec "\$SHELL"/exec "\$SHELL" \-\-login/g'  /usr/bin/byobu-shell
+sed -i 's/exec \/bin\/sh/exec \/bin\/bash \-\-login/g'  /usr/bin/byobu-shell
 echo "set -g status off" >>~/.byobu/.tmux.conf
 # start 
 byobu-enable
+reboot
