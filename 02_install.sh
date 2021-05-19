@@ -483,9 +483,9 @@ sleep 10
 EOF
 
 
-###############
+#######################
 # install rpi monitor #
-###############
+#######################
 
 # apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
 # wget http://goo.gl/vewCLL -O /etc/apt/sources.list.d/rpimonitor.list
@@ -523,9 +523,9 @@ EOF
 /etc/init.d/rpimonitor install_auto_package_status_update
 
 
-#############
+##################
 # install webmin #
-#############
+##################
 
 apt install libauthen-pam-perl apt-show-versions libio-pty-perl
 wget http://prdownloads.sourceforge.net/webadmin/webmin_1.974_all.deb
