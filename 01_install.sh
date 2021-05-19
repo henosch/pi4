@@ -52,7 +52,7 @@ network={
 }
 EOF
 
-# PW wird verschlüsselt
+# Password is encrypted
 # wpa_passphrase "WLAN-SSID" "WLAN-PASSWORT" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 
 # rfkill list all
