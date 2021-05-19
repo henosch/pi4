@@ -338,9 +338,9 @@ enabled = true
 EOF
 
 
-###################
-#   install unboun       #
-###################
+######################
+#   install unbound  #
+######################
 
 apt install unbound
 wget -O root.hints https://www.internic.net/domain/named.root
@@ -407,9 +407,9 @@ EOF
 #dig sigok.verteiltesysteme.net @127.0.0.1 -p 5335
 
 
-##############
-#   install pi-hole   #
-##############
+#####################
+#  install pi-hole  #
+#####################
 
 mkdir /etc/pihole
 
