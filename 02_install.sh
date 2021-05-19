@@ -182,7 +182,7 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/f
 
 
 ############### 
-#   jail chroot            #
+# jail chroot #
 ###############
 
 apt install build-essential autoconf automake libtool flex bison debhelper binutils
@@ -214,9 +214,9 @@ echo "julian:x:1002:1002:,,,:/home/julian:/bin/bash" >> /home/jail/etc/passwd
 rm -rf /home/jail/etc/jailkit/ 
 
 
-############
-#   influxdb        #
-############
+##############
+#  influxdb  #
+##############
 
 # with kali = apt install influxdb-client influxdb
 
@@ -243,9 +243,9 @@ cat <<EOF >> /etc/influxdb/influxdb.conf
 EOF
 
 
-###########
-#   grafana     #
-###########
+#############
+#  grafana  #
+#############
 
 # echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
 # wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
@@ -258,9 +258,9 @@ service grafana-server start
 update-rc.d grafana-server defaults
 
 
-#############
+###################
 # fail2ban config #
-#############
+###################
 
 # create a fail2ban Nextcloud filter
 cat <<EOF >/etc/fail2ban/filter.d/nextcloud.conf
