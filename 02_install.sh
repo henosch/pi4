@@ -228,9 +228,7 @@ service influxdb start
 /bin/systemctl daemon-reload
 /bin/systemctl enable influxdb
 
-influx
-CREATE DATABASE influxdb
-quit
+influx -execute 'CREATE DATABASE influxdb'
 
 cp /etc/influxdb/influxdb.conf /etc/influxdb/influxdb.conf_org
 sed -i 's/\[\[collectd\]\]/#\[\[collectd\]\]/g' /etc/influxdb/influxdb.conf
