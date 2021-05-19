@@ -94,10 +94,10 @@ systemctl enable vncserver-x11-serviced.service
 systemctl start vncserver-x11-serviced.service
 
 # error: Cannot currently show the desktop
-# raspi-config
-# 2. Display Options
-# D1 Resulotion
-# 1024x764
+# error fix (Display Resulotion 1024x764)
+# raspi-config or this: 
+
+sed -i "s|hdmi_mode=\/.*|hdmi_mode=16|g" /boot/config.txt
 
 
 #############
