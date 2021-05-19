@@ -407,9 +407,9 @@ EOF
 #dig sigok.verteiltesysteme.net @127.0.0.1 -p 5335
 
 
-###################
-#    install pi-hole               #
-###################
+##############
+#   install pi-hole   #
+##############
 
 mkdir /etc/pihole
 
