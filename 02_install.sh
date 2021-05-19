@@ -11,9 +11,9 @@ git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime
 sh ~/.vim_runtime/install_awesome_vimrc.sh
 
   
-###########################
-#        Install any php Version             #
-###########################
+#############################
+#  Install any php Version  #
+#############################
 
 # php 5.6
 apt install php5.6-fpm php5.6-gd php5.6-mysql php5.6-curl php5.6-xml \
@@ -51,9 +51,9 @@ update-alternatives --set php /usr/bin/php7.3
 php -i | grep "Loaded Configuration File"
 
 
-###########################
-# Install Xserver on rasp Image lite   #
-###########################
+#######################################
+# Install Xserver on rasp Image lite  #
+#######################################
 
 apt install --no-install-recommends xserver-xorg
 apt install raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone
@@ -69,18 +69,18 @@ chown lightdm:lightdm /var/lib/lightdm/data
 # apt install lxde lxde-core lxterminal lxappearanextcloude lightdm raspberrypi-ui-mods
 
 
-#############################
-#    xrdp - Microsoft Remote Desktop    #
-#############################
+####################################
+# xrdp - Microsoft Remote Desktop  #
+####################################
 
 apt install xrdp
 service xrdp start
 update-rc.d xrdp enable
 
 
-######################
-#      Install VNC Server            #
-######################
+#######################
+#  Install VNC Server #
+#######################
 
 apt install acl bc colord colord-data cups cups-browsed cups-client cups-common \
   cups-core-drivers cups-daemon cups-filters cups-filters-core-drivers \
@@ -100,18 +100,18 @@ systemctl start vncserver-x11-serviced.service
 # 1024x764
 
 
-###########
-#   apache2   #
-###########
+#############
+#  apache2  #
+#############
 
 # AH00111: Config variable ${APACHE_RUN_DIR} is not defined
 # DefaultRuntimeDir must be a valid directory, absolute or relative to ServerRoot
 # source /etc/apache2/envvars (fixed the error)
 
 
-################
-#   Apache Sites         #
-################
+##################
+#  Apache Sites  #
+##################
 
 # enable cgi-bin
 cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
