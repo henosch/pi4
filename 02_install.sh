@@ -98,3 +98,73 @@ systemctl start vncserver-x11-serviced.service
 # 2. Display Options
 # D1 Resulotion
 # 1024x764
+
+
+###########
+#   apache2   #
+###########
+
+# AH00111: Config variable ${APACHE_RUN_DIR} is not defined
+# DefaultRuntimeDir must be a valid directory, absolute or relative to ServerRoot
+# source /etc/apache2/envvars (fixed the error)
+
+
+################
+#   Apache Sites         #
+################
+
+# enable cgi-bin
+cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
+<IfModule mod_alias.c>
+    <IfModule mod_cgi.c>
+        Define ENABLE_USR_LIB_CGI_BIN
+    </IfModule>
+
+    <IfModule mod_cgid.c>
+        Define ENABLE_USR_LIB_CGI_BIN
+    </IfModule>
+
+<IfDefine ENABLE_USR_LIB_CGI_BIN>
+  ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+  <Directory "/usr/lib/cgi-bin">
+    AllowOverride None
+    Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch   
+    AddHandler cgi-script .cgi .py .pl
+# SetHandler cgi-script (all files allowed) 
+    Require all granted
+  </Directory>
+</IfDefine>
+</IfModule>
+EOF
+#enable cgi-bin
+a2enmod cgid cgi
+a2enconf cgi-enabled.conf
+
+# Python Test
+cat <<EOF > /usr/lib/cgi-bin/py_test.py
+#!/usr/bin/python
+import cgi
+cgi.test()
+EOF
+chmod +x /usr/lib/cgi-bin/py_test.py
+
+# Perl Test
+cat <<EOF > /usr/lib/cgi-bin/pl_test.pl
+#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+print "<BODY BGCOLOR=black>\n";
+print "<FONT COLOR=white><P>";
+print "<tt>\n";
+foreach $key (sort keys(%ENV)) {
+      print "$key = $ENV{$key}<BR>\n";
+}
+print "</FONT></BODY>"; 
+EOF
+chmod +x /usr/lib/cgi-bin/pl_test.pl
+
+# php Test
+cat <<EOF > /var/www/html/php_test.php
+<?php
+phpinfo();
+?>
+EOF
