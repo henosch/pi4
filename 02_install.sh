@@ -256,3 +256,85 @@ service grafana-server start
 /bin/systemctl daemon-reload
 /bin/systemctl enable grafana-server
 update-rc.d grafana-server defaults
+
+
+#############
+# fail2ban config #
+#############
+
+# create a fail2ban Nextcloud filter
+cat <<EOF >/etc/fail2ban/filter.d/nextcloud.conf
+[Definition]
+failregex=^{"reqId":".*","remoteAddr":".*","app":"core","message":"Login failed: '.*' \(Remote IP: '<HOST>'\)","level":2,"time":".*"}$
+          ^{"reqId":".*","level":2,"time":".*","remoteAddr":".*","user,:".*","app":"no app in context".*","method":".*","message":"Login failed: '.*' \(Remote IP: '<HOST>'\)".*}$
+          ^{"reqId":".*","level":2,"time":".*","remoteAddr":".*","user":".*","app":".*","method":".*","url":".*","message":"Login failed: .* \(Remote IP: <HOST>\)".*}$
+EOF
+
+# create a fail2ban Nextcloud jail
+cat <<EOF >/etc/fail2ban/jail.d/nextcloud.local
+[nextcloud]
+enabled = true
+filter = nextcloud
+backend = auto
+port = 80,443
+protocol = tcp
+maxretry = 5
+bantime = 3600
+findtime = 3600
+logpath = /var/www/nextcloud/data/nextcloud.log
+[apache-auth]
+enabled = true
+EOF
+
+cat <<EOF >/etc/fail2ban/jail.local 
+[apache-auth]
+enabled = true
+port    = http,https
+filter  = apache-auth
+logpath = /var/log/apache*/error*.log
+maxretry = 4
+
+[apache-multiport]
+enabled   = false
+port      = http,https
+filter    = apache-auth
+logpath   = /var/log/apache*/error*.log
+maxretry  = 4
+
+[apache-noscript]
+enabled = true
+port    = http,https
+filter  = apache-noscript
+logpath = /var/log/apache*/error*.log
+maxretry = 4
+
+[apache-overflows]
+enabled = true
+port    = http,https
+filter  = apache-overflows
+logpath = /var/log/apache*/error*.log
+maxretry = 10
+
+[apache-nohome]
+enabled = true
+port = http,https
+filter = apache-nohome
+logpath = /var/log/apache*/error*.log
+maxretry = 5
+
+[apache-badbots]
+enabled = true
+port = http,https
+filter = apache-badbots
+logpath = /var/log/apache*/access*.log
+maxretry = 3
+
+[webmin-auth]
+enabled = true
+
+[squid]
+enabled = true
+
+[phpmyadmin-syslog]
+enabled = true
+EOF
