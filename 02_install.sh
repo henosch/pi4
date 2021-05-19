@@ -336,3 +336,148 @@ enabled = true
 [phpmyadmin-syslog]
 enabled = true
 EOF
+
+
+###################
+#   install unboun       #
+###################
+
+apt install unbound
+wget -O root.hints https://www.internic.net/domain/named.root
+chown unbound:unbound root.hints
+mv root.hints /var/lib/unbound/
+
+cat <<EOF >> /etc/unbound/unbound.conf.d/pi-hole.conf
+server:
+    # If no logfile is specified, syslog is used
+    # logfile: "/var/log/unbound/unbound.log"
+    verbosity: 0
+
+    port: 5335
+    do-ip4: yes
+    do-udp: yes
+    do-tcp: yes
+
+    # May be set to yes if you have IPv6 connectivity
+    do-ip6: no
+
+    # Use this only when you downloaded the list of primary root servers!
+    root-hints: "/var/lib/unbound/root.hints"
+
+    # Trust glue only if it is within the servers authority
+    harden-glue: yes
+
+    # Require DNSSEC data for trust-anextcloudhored zones, if such data is absent, the zone becomes BOGUS
+    harden-dnssec-stripped: yes
+
+    # Don't use Capitalization randomization as it known to cause DNSSEC issues sometimes
+    # see https://discourse.pi-hole.net/t/unbound-stubby-or-dnscrypt-proxy/9378 for further details
+    use-caps-for-id: no
+
+    # Reduce EDNS reassembly buffer size.
+    # Suggested by the unbound man page to reduce fragmentation reassembly problems
+    edns-buffer-size: 1472
+
+    # TTL bounds for cache
+    cache-min-ttl: 3600
+    cache-max-ttl: 86400
+
+    # Perform prefetching of close to expired message cache entries
+    # This only applies to domains that have been frequently queried
+    prefetch: yes
+
+    # One thread should be sufficient, can be inextcloudreased on beefy machines
+    num-threads: 1
+
+    # Ensure kernel buffer is large enough to not lose messages in traffic spikes
+    so-rcvbuf: 1m
+
+    # Ensure privacy of local IP ranges
+    private-address: 192.168.0.0/16
+    private-address: 169.254.0.0/16
+    private-address: 172.16.0.0/12
+    private-address: 10.0.0.0/8
+    private-address: fd00::/8
+    private-address: fe80::/10
+EOF
+
+# test it
+#dig google.com @127.0.0.1 -p 5335
+#dig sigfail.verteiltesysteme.net @127.0.0.1 -p 5335
+#dig sigok.verteiltesysteme.net @127.0.0.1 -p 5335
+
+
+###################
+#    install pi-hole               #
+###################
+
+mkdir /etc/pihole
+
+# setupVars.conf
+cat <<EOF > /etc/pihole/setupVars.conf
+WEBPASSWORD=ecdca4c1892c120b16105c4c99e1d80c9363cd23b209d830c4660777552a51e6
+DNSMASQ_LISTENING=local
+PIHOLE_INTERFACE=eth0
+IPV4_ADDRESS=192.168.11.29/24
+IPV6_ADDRESS=2001:a61:115a:4c01:b018:a0ef:1872:6f3f
+PIHOLE_DNS_1=127.0.0.1#5335
+PIHOLE_DNS_2=127.0.0.1#5335
+QUERY_LOGGING=true
+INSTALL_WEB_SERVER=false
+INSTALL_WEB_INTERFACE=true
+LIGHTTPD_ENABLED=false
+CACHE_SIZE=10000
+BLOCKING_ENABLED=true
+EOF
+
+# adlists
+cat <<EOF > /etc/pihole/adlists.list
+http://localhost/adblock.hosts
+https://dl.dropboxusercontent.com/s/j9vfm2x6o9qj7ox/hosts
+https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Hosts/GoodbyeAds.txt
+https://v.firebog.net/hosts/AdguardDNS.txt
+https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext
+https://raw.githubusercontent.com/chadmayfield/my-pihole-blocklists/master/lists/pi_blocklist_porn_all.list
+https://raw.githubusercontent.com/chadmayfield/my-pihole-blocklists/master/lists/pi_blocklist_porn_top1m.list
+EOF
+
+# pihole-FTL.conf
+cat <<EOF > /etc/pihole/pihole-FTL.conf
+PRIVACYLEVEL=0
+IGNORE_LOCALHOST=yes
+AAAA_QUERY_ANALYSIS=no
+EOF
+
+# without inside http server. We use apache 2
+curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended --disable-install-webserver
+usermod -a -G pihole www-data
+
+# AdBlock Lists (EasyList, EasyPrivacy, / Social Blocking)
+cat <<EOF > /etc/pihole/myblocklist.sh
+#!/bin/sh
+curl -s -L https://easylist.to/easylist/easylist.txt https://easylist.to/easylist/easyprivacy.txt \\
+ https://easylist.to/easylist/fanboy-social.txt > adblock.unsorted
+ 
+# Look for: ||domain.tld^
+sort -u adblock.unsorted | grep ^\|\|.*\^$ | grep -v \/ > adblock.sorted
+ 
+# Remove extra chars and put list under lighttpd web root
+sed 's/[\|^]//g' < adblock.sorted > /var/www/html/adblock.hosts
+ 
+# Remove files we no longer need
+rm adblock.unsorted adblock.sorted
+sudo chown pihole:pihole -R /etc/pihole/
+EOF
+
+chmod 755 /etc/pihole/myblocklist.sh
+
+# update AdBlock Lists (EasyList, EasyPrivacy, / Social Blocking)
+cat <<EOF > /etc/pihole/update_myblocklist.sh
+#!/bin/sh
+/etc/pihole/myblocklist.sh
+sleep 10
+pihole -g
+sleep 10
+/etc/init.d/pihole-FTL restart
+EOF
