@@ -449,7 +449,7 @@ IGNORE_LOCALHOST=yes
 AAAA_QUERY_ANALYSIS=no
 EOF
 
-# without inside http server. We use apache 2
+# pihole without inside http server. We use apache 2
 curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended --disable-install-webserver
 usermod -a -G pihole www-data
 
