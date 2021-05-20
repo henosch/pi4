@@ -343,9 +343,15 @@ EOF
 ######################
 
 apt install unbound -y
-wget -O root.hints https://www.internic.net/domain/named.root
-chown unbound:unbound root.hints
-mv root.hints /var/lib/unbound/
+wget -O /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
+chown unbound:unbound /var/lib/unbound/root.hints
+
+# update root.hints
+wget -O /usr/local/bin/autoupdatelocalroot https://raw.githubusercontent.com/henosch/pi4/main/autoupdatelocalroot
+chmod 755 /usr/local/bin/autoupdatelocalroot
+echo -e "$(crontab -l)\n20 4 * * 0    /usr/local/bin/autoupdatelocalroot" | crontab -u mike -
+wget -O /usr/local/bin/updateunboundconf https://raw.githubusercontent.com/henosch/pi4/main/updateunboundconf
+chmod 755 /usr/local/bin/updateunboundconf
 
 cat <<EOF >> /etc/unbound/unbound.conf.d/pi-hole.conf
 server:
@@ -400,6 +406,9 @@ server:
     private-address: fd00::/8
     private-address: fe80::/10
 EOF
+
+systemctl restart unbound
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 # test it
 #dig google.com @127.0.0.1 -p 5335
