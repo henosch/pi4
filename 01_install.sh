@@ -22,6 +22,7 @@ chmod 600 ~/.ssh/authorized_keys
 
 sed -i 's/#Port 22/Port 2022/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/g' /etc/ssh/sshd_config
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 60/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 240/g' /etc/ssh/sshd_config
 
@@ -93,6 +94,7 @@ systemctl start wpa_supplicant@wlan0.service
 # needed repo #
 ###############
 
+# The PI Server becomes a name server
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 # php
@@ -128,14 +130,14 @@ dpkg-reconfigure bash
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
-apt install apache2 mariadb-server zip unzip build-essential
-apt install apt-transport-https lsb-release npm git cifs-utils whois \
-  python-pip libxml2-dev libxslt1-dev collectd dirmngr shellinabox 
-apt install sarg webalizer samba-common-bin fail2ban
-apt install libmariadb-dev-compat libmariadb-dev libapache2-mod-security2 \
+apt install apache2 mariadb-server zip unzip build-essential \
+  apt-transport-https lsb-release npm git cifs-utils whois \
+  python-pip libxml2-dev libxslt1-dev collectd dirmngr shellinabox \
+  sarg webalizer samba-common-bin fail2ban \
+  libmariadb-dev-compat libmariadb-dev libapache2-mod-security2 \
   php-apcu imagemagick php-imagick strace samba smbclient locate libsqlite3-dev \
-  python3-pip python3-cffi nodejs vim lynx youtube-dl byobu ranger wajig
-apt install awstats libgeo-ip-perl libgeo-ipfree-perl
+  python3-pip python3-cffi nodejs vim lynx youtube-dl byobu ranger wajig \
+  awstats libgeo-ip-perl libgeo-ipfree-perl -y
   
 # config wajig
 ln -s /usr/bin/wajig /usr/bin/apt2
