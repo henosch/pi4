@@ -14,10 +14,12 @@ echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
 #      sshd settings        #
 #################
 
-cat <<EOF > ~/testkey
+mkdir ~/.ssh/ && chmod 700 ~/.ssh/
+cat <<EOF > ~/.ssh/authorized_keys
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgzf3yRLgztIX0GL5uJYSmsudJdgeGK4tXdt94g+quW mike@localhost
 EOF
-cat ~/testkey |  "mkdir -p ~/.ssh/ && cat - >> ~/.ssh/authorized_keys && /bin/chmod 600 ~/.ssh/authorized_keys && /bin/chmod 700 ~/.ssh/"
+chmod 600 ~/.ssh/authorized_keys
+
 sed -i 's/#Port 22/Port 2022/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 60/g' /etc/ssh/sshd_config
