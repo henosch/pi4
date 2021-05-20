@@ -1,0 +1,87 @@
+#!/usr/bin/bash
+## VARIABLES ##
+
+dir=$HOME/.unbound
+HINTS=/var/lib/unbound/root.hints
+CONF=/etc/unbound/unbound.conf.d/localroot.conf
+infile=${dir}/root.hints
+outfile=${dir}/localroot.conf
+update=${dir}/update.txt
+PROTECTED="read protected. Trying sudo to read file…"
+
+
+## SCRIPT ##
+
+# check for existence of update.txt file and .unbound directory
+[ ! -d "$dir" ] && mkdir "${dir}"
+[ ! -e "$update" ] && touch "${update}"
+
+# get the file with the root servers and save as "root.hints"; if error, write to motd file and exit
+if ! wget --timeout=30 -O "${infile}" https://www.internic.net/domain/named.root
+then
+	echo "wget encountered an error. Run autoupdatelocalroot manually for more info." > "${update}"
+	exit 1
+fi
+
+# extract name and IP addresses (A + AAAA) of root servers and nicely put them into the file for unbound
+awk '\
+	BEGIN { print "auth-zone:\n\tname: \".\"" }
+
+	{
+	if($0 ~ /[ 	]NS[ 	]/) { print "\t# "$NF }
+	if($0 ~ /[ 	]A[ 	]/) { print "\tmaster: "$NF }
+	if($0 ~ /[ 	]AAAA[ 	]/) { print "\tmaster: "$NF }
+	}
+
+	END { print "\tfallback-enabled: yes\n\tfor-downstream: no\n\tfor-upstream: yes\n\tzonefile: \"/var/lib/unbound/root.zone\"\n" }\
+' "${infile}" > "${outfile}"
+
+# store diffs to vars and disregard date for root.hints, meaning only real changes are applied
+# diffshintsdate is for distinguishing between actual and date-only changes
+SUDO=''
+if [ ! -r "${HINTS}" ] && [ -e "${HINTS}" ];
+then
+	echo "${HINTS} ${PROTECTED}"
+	SUDO='sudo '
+fi
+diffshints=$(${SUDO}diff -Niw -I 'last update:' -I 'related version of root zone:' "${HINTS}" "${infile}")
+diffshintsdate=$(${SUDO}diff -Niw "${HINTS}" "${infile}")
+
+SUDO=''
+if [ ! -r "${CONF}" ] && [ -e "${CONF}" ];
+then
+	echo "${CONF} ${PROTECTED}"
+	SUDO='sudo '
+fi
+diffsconf=$(${SUDO}diff -Niw "${CONF}" "${outfile}")
+
+# update the motd notification file if there is an update available
+if [ "$diffshints" != "" ] || [ "$diffsconf" != "" ]
+then
+	echo "Update available – please run: updateunboundconf" > "${update}"
+
+	##########
+	# You can configure email notification at this point, if you have set up a mail transfer
+	# agent (e. g. postfix) and / or a mail program like s-nail. Edit below this text box.
+	#
+	# Falls E-Mail-Benachrichtigungen gewünscht sind, ist dies die Stelle der Wahl – die
+	# entsprechende Konfiguration des Drumherums vorausgesetzt (postfix und / oder s-nail z. B.).
+	# Bitte die Zeile unter dieser Textbox editieren.
+	#
+	# Example explanation if you have set up the account "MAIL" in s-nail:
+	# echo "The content of the email goes here" | s-nail -A MAIL -s "subject" receiver_address
+	# Ein Beispiel, wenn ein Account "MAIL" in s-nail konfiguriert wurde:
+	# echo "Inhalt der E-Mail" | s-nail -A MAIL -s "Betreff" Empfänger-Adresse
+	##########
+
+	# echo "Update for Unbound's local root config available" | s-nail -A MAIL -s "Unbound update available" receiver@doma.in
+
+elif [ -e "${infile}" ] && [ "$diffshintsdate" != "" ]
+then
+	echo "up to date (timestamp changed) [updateunboundconf]" > "${update}"
+else
+	echo "up to date" > "${update}"
+fi
+
+# print update status
+cat "${update}"
