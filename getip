@@ -1,0 +1,1 @@
+/usr/local/bin/fb_tools fritz.box getip | grep IPv4 | awk '{print $2 }'| grep -v IPv4:
