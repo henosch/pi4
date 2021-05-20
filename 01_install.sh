@@ -3,7 +3,7 @@
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
 ####################
-#     sudoers settings         #
+# sudoers settings #
 ####################
 
 sed -i 's/NOPASSWD/PASSWD/g' /etc/sudoers.d/010_pi-nopasswd
@@ -11,7 +11,7 @@ echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
 
 
 #################
-#      sshd settings        #
+# sshd settings #
 #################
 
 mkdir ~/.ssh/ && chmod 700 ~/.ssh/
