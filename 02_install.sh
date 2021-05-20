@@ -530,3 +530,22 @@ EOF
 apt install libauthen-pam-perl apt-show-versions libio-pty-perl
 wget http://prdownloads.sourceforge.net/webadmin/webmin_1.974_all.deb
 dpkg --install webmin_1.974_all.deb
+
+
+####################
+#    shellinabox            #
+#################
+
+# shellinabox config file
+cp /etc/default/shellinabox /etc/default/shellinabox_org
+cat <<EOF > /etc/default/shellinabox
+SHELLINABOX_DAEMON_START=1
+SHELLINABOX_PORT=8700
+SHELLINABOX_ARGS="--no-beep --localhost-only --disable-ssl -s /:LOGIN"
+EOF
+
+# terminal white on black
+mv /etc/shellinabox/options-enabled/00+Black\ on\ White.css /etc/shellinabox/options-enabled/00_Black\ on\ White.css \
+ && mv /etc/shellinabox/options-enabled/00_White\ On\ Black.css /etc/shellinabox/options-enabled/00+White\ On\ Black.css
+
+
