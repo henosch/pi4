@@ -3,7 +3,7 @@
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
 # error fix: udisksd[433]: failed to load module mdraid: libbd_mdraid.so.2
-apt install libblockdev-mdraid2
+apt install libblockdev-mdraid2 -y
 
 
 # install awesome vim current user
@@ -55,25 +55,25 @@ php -i | grep "Loaded Configuration File"
 # Install Xserver on rasp Image lite  #
 #######################################
 
-apt install --no-install-recommends xserver-xorg
-apt install raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone
+apt install --no-install-recommends xserver-xorg -y
+apt install raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone -y
 
 # error fix: Error getting user list from org.freedesktop.Accounts: GDBus.Error
-apt install accountsservice
+apt install accountsservice -y
 
 # error fix
 mkdir /var/lib/lightdm/data
 chown lightdm:lightdm /var/lib/lightdm/data
 
 # full xserver
-# apt install lxde lxde-core lxterminal lxappearanextcloude lightdm raspberrypi-ui-mods
+# apt install lxde lxde-core lxterminal lxappearanextcloude lightdm raspberrypi-ui-mods -y
 
 
 ####################################
 # xrdp - Microsoft Remote Desktop  #
 ####################################
 
-apt install xrdp
+apt install xrdp -y
 service xrdp start
 update-rc.d xrdp enable
 
@@ -88,7 +88,7 @@ apt install acl bc colord colord-data cups cups-browsed cups-client cups-common 
   libgutenprint-common libgutenprint9 libieee1284-3 liblouis-data liblouis17 \
   liblouisutdml-bin liblouisutdml-data liblouisutdml8 libpoppler82 libqpdf21 \
   libsane libsane-common libyaml-0-2 poppler-utils printer-driver-gutenprint \
-  realvnc-vnc-server sane-utils update-inetd
+  realvnc-vnc-server sane-utils update-inetd -y
 
 systemctl enable vncserver-x11-serviced.service
 systemctl start vncserver-x11-serviced.service
@@ -185,14 +185,14 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/f
 # jail chroot #
 ###############
 
-apt install build-essential autoconf automake libtool flex bison debhelper binutils
+apt install build-essential autoconf automake libtool flex bison debhelper binutils -y
 wget https://olivier.sessink.nl/jailkit/jailkit-2.21.tar.gz
-tar xvfz jailkit-2.21.tar.gz
-cd jailkit-2.21
+tar xvfz jailkit-2.22.tar.gz
+cd jailkit-2.22
 echo 5 > debian/compat
 ./debian/rules binary
 cd ..
-dpkg -i jailkit_2.21-1_*.deb
+dpkg -i jailkit_2.22-1_*.deb
 mkdir /home/jail
 chown root:root /home/jail
 chmod 0755 /home/jail
@@ -205,7 +205,7 @@ chmod 0755 /home/jail
 /usr/sbin/jk_cp -j /home/jail/ /usr/bin/strace
 /usr/sbin/jk_cp -j /home/jail/ /usr/bin/whois
 useradd -m julian
-passwd julian
+# passwd julian
 /usr/sbin/jk_jailuser -j /home/jail -s /usr/sbin/jk_lsh -m julian
 /usr/sbin/jk_jailuser -m -j /home/jail julian
 #sed -i 's/julian/#julian/g' /home/jail/etc/passwd
@@ -223,7 +223,7 @@ rm -rf /home/jail/etc/jailkit/
 # curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 # echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 
-apt install influxdb
+apt install influxdb -y
 service influxdb start
 /bin/systemctl daemon-reload
 /bin/systemctl enable influxdb
@@ -248,7 +248,7 @@ EOF
 # echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
 # wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
 
-apt install grafana
+apt install grafana -y
 
 service grafana-server start
 /bin/systemctl daemon-reload
@@ -342,7 +342,7 @@ EOF
 #   install unbound  #
 ######################
 
-apt install unbound
+apt install unbound -y
 wget -O root.hints https://www.internic.net/domain/named.root
 chown unbound:unbound root.hints
 mv root.hints /var/lib/unbound/
@@ -490,7 +490,7 @@ EOF
 # apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
 # wget http://goo.gl/vewCLL -O /etc/apt/sources.list.d/rpimonitor.list
 
-apt install rpimonitor
+apt install rpimonitor -y
 conf_file="/etc/rpimonitor/data.conf"
 cp $conf_file /etc/rpimonitor/data.conf_org
 sed -i 's/#inextcloudlude=\/etc\/rpimonitor\/template\/network.conf/inextcloudlude=\/etc\/rpimonitor\/template\/network.conf/g' $conf_file
