@@ -14,7 +14,7 @@ echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
 #      sshd settings        #
 #################
 
-cat <<EOF > /home/mike/testkey
+cat <<EOF > ~/testkey
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgzf3yRLgztIX0GL5uJYSmsudJdgeGK4tXdt94g+quW mike@localhost
 EOF
 cat ~/testkey |  "mkdir -p ~/.ssh/ && cat - >> ~/.ssh/authorized_keys && /bin/chmod 600 ~/.ssh/authorized_keys && /bin/chmod 700 ~/.ssh/"
