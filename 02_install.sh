@@ -482,6 +482,11 @@ sleep 10
 /etc/init.d/pihole-FTL restart
 EOF
 
+chmod 755 /etc/pihole/update_myblocklist.sh
+echo -e "$(crontab -l)\n30 2 * * 6    pihole    /etc/pihole/update_myblocklist.sh" | crontab -u root -
+echo -e "$(crontab -l)\n30 2 * * 7    /usr/local/bin/pihole updatePihole" | crontab -u root -
+chown pihole:pihole -R /etc/pihole/ 
+
 
 #######################
 # install rpi monitor #
