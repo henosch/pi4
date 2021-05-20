@@ -532,9 +532,9 @@ wget http://prdownloads.sourceforge.net/webadmin/webmin_1.974_all.deb
 dpkg --install webmin_1.974_all.deb
 
 
-####################
-#    shellinabox            #
-#################
+##############
+# sellinabox #
+##############
 
 # shellinabox config file
 cp /etc/default/shellinabox /etc/default/shellinabox_org
