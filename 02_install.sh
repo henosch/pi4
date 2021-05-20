@@ -554,3 +554,6 @@ mv /etc/shellinabox/options-enabled/00+Black\ on\ White.css /etc/shellinabox/opt
  && mv /etc/shellinabox/options-enabled/00_White\ On\ Black.css /etc/shellinabox/options-enabled/00+White\ On\ Black.css
 
 
+# backup pihole with rclone
+curl https://rclone.org/install.sh | sudo bash
+curl https://raw.githubusercontent.com/henosch/rclone-backup/master/install.sh | sudo bash
