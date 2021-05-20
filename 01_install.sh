@@ -132,8 +132,8 @@ echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 apt install apache2 mariadb-server zip unzip build-essential \
   apt-transport-https lsb-release npm git cifs-utils whois \
-  python-pip libxml2-dev libxslt1-dev collectd dirmngr shellinabox \
-  sarg webalizer samba-common-bin fail2ban \
+  python-pip libxml2-dev libxslt1-dev collectd dirmngr  \
+  sarg webalizer samba-common-bin fail2ban shellinabox \
   libmariadb-dev-compat libmariadb-dev libapache2-mod-security2 \
   php-apcu imagemagick php-imagick strace samba smbclient locate libsqlite3-dev \
   python3-pip python3-cffi nodejs vim lynx youtube-dl byobu ranger wajig \
