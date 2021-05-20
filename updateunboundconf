@@ -1,0 +1,112 @@
+#!/bin/sh
+
+## VARIABLES ##
+
+dir=$HOME/.unbound
+HINTS=/var/lib/unbound/root.hints
+hintsbackup=${HINTS}.bak
+CONF=/etc/unbound/unbound.conf.d/localroot.conf
+confbackup=${CONF}.bak
+infile=${dir}/root.hints
+outfile=${dir}/localroot.conf
+update=${dir}/update.txt
+
+PLSUPDATEFIRST='Please run "autoupdatelocalroot" first.'
+UPDATESKIPPED='skipping…'
+
+## Privilege escalation ##
+
+SUDO=''
+[ ! "$(id -u)" -eq 0 ] && SUDO='sudo ' && echo "This script needs the sudo command or root login."
+SUDOHINTS=''
+[ ! -r "${HINTS}" ] && [ -e "${HINTS}" ] && SUDOHINTS='sudo '
+SUDOCONF=''
+[ ! -r "${CONF}" ] && [ -e "${CONF}" ] && SUDOCONF='sudo '
+
+## SCRIPT ##
+
+#update root.hints file
+if [ -e "${infile}" ] && [ "$(${SUDO}diff -Niw ${HINTS} "${infile}")" != "" ]
+then
+	while true
+	do
+		echo
+		echo "==> ${infile} is about to replace ${HINTS}"
+		echo "Install new root.hints file for Unbound?"
+		echo "Options are:"
+		echo " D: Show differences between the new and the old file."
+		echo " Y: Install the new file."
+		echo " N: Do nothing, keep the old file."
+		echo "D/Y/N [default=N] ? "
+		read -r input
+		case "$input" in
+			y|Y|yes|YES|Yes) ${SUDOHINTS}[ -e "${HINTS}" ] && ${SUDO}mv -fv ${HINTS} ${hintsbackup}
+					${SUDO}cp -fv "${infile}" "${HINTS}"
+					${SUDO}chown unbound:unbound "${HINTS}"
+					yes1=TRUE
+					break
+			;;
+			d|D|diff|DIFF|Diff) ${SUDOHINTS}diff -Niw "${HINTS}" "${infile}"
+			;;
+			n|N|no|NO|No|*) echo "$UPDATESKIPPED"
+					break
+			;;
+		esac
+
+	done
+else
+	if [ ! -e "${infile}" ]
+	then
+		echo "$PLSUPDATEFIRST"
+		exit 1
+	else
+		yes1=TRUE
+	fi
+fi
+
+#update localroot.conf file
+if [ -e "${outfile}" ] && [ "$(${SUDOCONF}diff -Niw "${CONF}" "${outfile}")" != "" ]
+then
+	while true
+	do
+		echo
+		echo "==> ${outfile} is about to replace ${CONF}"
+		echo "Install new localroot.conf file for Unbound?"
+		echo "Options are:"
+		echo " D: Show differences between the new and the old file."
+		echo " Y: Install the new file."
+		echo " N: Do nothing, keep the old file."
+		echo "D/Y/N [default=N] ? "
+		read -r input
+		case "$input" in
+			y|Y|yes|YES|Yes) ${SUDOCONF}[ -e "${CONF}" ] && ${SUDO}mv -fv "${CONF}" "${confbackup}"
+					${SUDO}cp -fv "${outfile}" "${CONF}"
+					${SUDO}chown root:root "${CONF}"
+					yes2=TRUE
+					break
+			;;
+			d|D|diff|DIFF|Diff) ${SUDOCONF}diff -Niw "${CONF}" "${outfile}"
+			;;
+			n|N|no|NO|No|*) echo $UPDATESKIPPED
+					break
+			;;
+		esac
+	done
+elif [ ! -e "${outfile}" ]
+then
+	echo "$PLSUPDATEFIRST"
+	exit 1
+else
+	yes2=TRUE
+fi
+
+#update file for motd and echo result
+if [ "$yes1" = TRUE ] && [ "$yes2" = TRUE ]
+then
+	echo "up to date" > "${update}"
+	echo "Unbound's local root config is up to date."
+	echo
+	echo "For changes to take effect reboot system or restart unbound [sudo systemctl restart unbound]"
+else
+	echo "Update not complete."
+fi
