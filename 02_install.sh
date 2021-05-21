@@ -461,10 +461,6 @@ IGNORE_LOCALHOST=yes
 AAAA_QUERY_ANALYSIS=no
 EOF
 
-# pihole without inside http server. We use apache 2
-curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended --disable-install-webserver
-usermod -a -G pihole www-data
-
 # AdBlock Lists (EasyList, EasyPrivacy, / Social Blocking)
 cat <<EOF > /etc/pihole/myblocklist.sh
 #!/bin/sh
@@ -498,6 +494,11 @@ chmod 755 /etc/pihole/update_myblocklist.sh
 echo -e "$(crontab -l)\n30 2 * * 6    pihole    /etc/pihole/update_myblocklist.sh" | crontab -u root -
 echo -e "$(crontab -l)\n30 2 * * 7    /usr/local/bin/pihole updatePihole" | crontab -u root -
 chown pihole:pihole -R /etc/pihole/ 
+sh /etc/pihole/update_myblocklist.sh
+
+# pihole without inside http server. We use apache 2
+curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended --disable-install-webserver
+usermod -a -G pihole www-data
 
 
 #######################
