@@ -185,11 +185,6 @@ a2enmod proxy_balancer proxy proxy_http
 # Apache test scripts #
 #######################
 
-a2enmod headers security2 proxy_fcgi
-
-# apache2 mod needed for shell in a box
-a2enmod proxy_balancer proxy proxy_http
-
 # Python Test
 cat <<EOF > /usr/lib/cgi-bin/py_test.py
 #!/usr/bin/python
