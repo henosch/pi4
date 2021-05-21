@@ -9,4 +9,5 @@ cat <<EOF > ~/testing/testme
 $SUSER
 EOF
 echo $USER
+echo $SUSER
 chmod 600 ~/testing/testme
