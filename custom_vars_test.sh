@@ -1,7 +1,7 @@
 #!/bin/bash
 # Only for testing
 
-[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+[ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 
 # local vars testing
 mkdir ~/testing/ && chmod 700 ~/testing/
