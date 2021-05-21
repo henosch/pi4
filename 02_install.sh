@@ -441,14 +441,17 @@ EOF
 
 # adlists
 cat <<EOF > /etc/pihole/adlists.list
+https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 http://localhost/adblock.hosts
 https://dl.dropboxusercontent.com/s/j9vfm2x6o9qj7ox/hosts
-https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Hosts/GoodbyeAds.txt
 https://v.firebog.net/hosts/AdguardDNS.txt
 https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext
 https://raw.githubusercontent.com/chadmayfield/my-pihole-blocklists/master/lists/pi_blocklist_porn_all.list
 https://raw.githubusercontent.com/chadmayfield/my-pihole-blocklists/master/lists/pi_blocklist_porn_top1m.list
+https://raw.githubusercontent.com/AdguardTeam/cname-trackers/master/combined_disguised_trackers_justdomains.txt
+https://github.com/RPiList/specials/blob/master/Blocklisten/Corona-Blocklist
+https://raw.githubusercontent.com/RPiList/specials/master/Blocklisten/Phishing-Angriffe
 EOF
 
 # pihole-FTL.conf
