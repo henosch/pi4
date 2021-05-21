@@ -8,4 +8,5 @@ mkdir ~/testing/ && chmod 700 ~/testing/
 cat <<EOF > ~/testing/testme
 $SUSER
 EOF
+echo $USER
 chmod 600 ~/testing/testme
