@@ -499,10 +499,7 @@ chmod 755 /etc/pihole/myblocklist.sh
 cat <<EOF > /etc/pihole/update_myblocklist.sh
 #!/bin/sh
 /etc/pihole/myblocklist.sh
-sleep 10
 pihole -g
-sleep 10
-/etc/init.d/pihole-FTL restart
 EOF
 
 chmod 755 /etc/pihole/update_myblocklist.sh
