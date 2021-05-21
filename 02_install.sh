@@ -147,9 +147,9 @@ a2enmod cgid cgi
 a2enconf cgi-enabled.conf
 
 
-################
-#   Apache   security#
-################
+###################
+# Apache security #
+###################
 
 # modsecurity config
 rm -rf /usr/share/modsecurity-crs
@@ -172,7 +172,7 @@ ServerName 127.0.0.1
 EOF
 
 ################
-#   Apache modul      #
+# Apache modul #
 ################
 
 a2enmod headers security2 proxy_fcgi
@@ -181,9 +181,9 @@ a2enmod headers security2 proxy_fcgi
 a2enmod proxy_balancer proxy proxy_http
 
 
-################
-#   Apache test scripts     #
-################
+#######################
+# Apache test scripts #
+#######################
 
 a2enmod headers security2 proxy_fcgi
 
