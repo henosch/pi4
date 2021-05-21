@@ -531,6 +531,7 @@ printf "URLs total:		%10d\n" $T1
 printf "URLs unique:	%10d\n" $T2
 printf "Percentage:	  %8.1f %%\n" $S
 EOF
+chmod +x /etc/pihole/uniq_urls.sh
 
 # useful commands
 # sqlite3 /etc/pihole/gravity.db "SELECT domain FROM vw_blacklist;"
