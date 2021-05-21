@@ -467,6 +467,7 @@ https://raw.githubusercontent.com/chadmayfield/my-pihole-blocklists/master/lists
 https://raw.githubusercontent.com/AdguardTeam/cname-trackers/master/combined_disguised_trackers_justdomains.txt
 https://github.com/RPiList/specials/blob/master/Blocklisten/Corona-Blocklist
 https://raw.githubusercontent.com/RPiList/specials/master/Blocklisten/Phishing-Angriffe
+https://raw.githubusercontent.com/henosch/my-pihole-lists/master/block_google_updates.txt
 EOF
 
 # pihole-FTL.conf
