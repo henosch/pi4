@@ -146,7 +146,12 @@ EOF
 a2enmod cgid cgi
 a2enconf cgi-enabled.conf
 
-# apache 2 security 
+
+################
+#   Apache   security#
+################
+
+# modsecurity config
 rm -rf /usr/share/modsecurity-crs
 git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
 cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
