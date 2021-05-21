@@ -439,6 +439,21 @@ CACHE_SIZE=10000
 BLOCKING_ENABLED=true
 EOF
 
+# white list
+cat <<EOF > /etc/pihole/whitelist.txt
+raw.githubusercontent.com
+device-metrics-us-2.amazon.com
+fls-eu.amazon.de
+mytools.management
+connectivitycheck.gstatic.com
+in.appcenter.ms
+s3.amazonaws.com
+v.firebog.net
+fritz.box
+bnc.lt
+de.ioam.de
+EOF
+
 # adlists
 cat <<EOF > /etc/pihole/adlists.list
 https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
