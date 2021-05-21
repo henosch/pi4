@@ -166,6 +166,25 @@ SecRuleEngine On
 ServerName 127.0.0.1
 EOF
 
+################
+#   Apache modul      #
+################
+
+a2enmod headers security2 proxy_fcgi
+
+# apache2 mod needed for shell in a box
+a2enmod proxy_balancer proxy proxy_http
+
+
+################
+#   Apache test scripts     #
+################
+
+a2enmod headers security2 proxy_fcgi
+
+# apache2 mod needed for shell in a box
+a2enmod proxy_balancer proxy proxy_http
+
 # Python Test
 cat <<EOF > /usr/lib/cgi-bin/py_test.py
 #!/usr/bin/python
@@ -195,7 +214,7 @@ phpinfo();
 ?>
 EOF
 
-#PHP Mod fpm/php.ini
+#PHP Mod fpm/php.ini (Nextcloud config) 
 cp /etc/php/7.3/fpm/php.ini /etc/php/7.3/fpm/php.ini_org
 sed -i "s/memory_limit = 128M/memory_limit = 512M/" /etc/php/7.3/fpm/php.ini
 sed -i "s/;opcache.enable=.*/opcache.enable=1/" /etc/php/7.3/fpm/php.ini
