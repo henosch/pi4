@@ -20,6 +20,8 @@ $SSHKEY
 EOF
 chmod 600 ~/.ssh/authorized_keys
 
+sleep 100000
+
 sed -i 's/#Port 22/Port $SSHPORT/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/g' /etc/ssh/sshd_config
 sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
