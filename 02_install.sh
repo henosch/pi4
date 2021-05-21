@@ -135,10 +135,36 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
   </Directory>
 </IfDefine>
 </IfModule>
+
+SecRuleEngine On
+ <IfModule security2_module>
+          Include /usr/share/modsecurity-crs/crs-setup.conf
+          Include /usr/share/modsecurity-crs/rules/*.conf
+    </IfModule>
 EOF
 #enable cgi-bin
 a2enmod cgid cgi
 a2enconf cgi-enabled.conf
+
+# apache 2 security 
+rm -rf /usr/share/modsecurity-crs
+git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
+cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
+cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf 
+sed -i "s/SecRuleEngine.*/SecRuleEngine On/g" /etc/modsecurity/modsecurity.conf
+
+# Apache security2 modul config
+cat <<EOF >> /etc/apache2/apache2.conf
+SecRuleEngine On
+ <IfModule security2_module>
+          Include /usr/share/modsecurity-crs/crs-setup.conf
+          Include /usr/share/modsecurity-crs/rules/*.conf
+          ServerTokens Full
+          SecServerSignature "Apache/2.2.16 (Unix)"
+    </IfModule>
+
+ServerName 127.0.0.1
+EOF
 
 # Python Test
 cat <<EOF > /usr/lib/cgi-bin/py_test.py
