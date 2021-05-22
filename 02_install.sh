@@ -37,8 +37,15 @@ apt install php7.3-fpm php7.3-gd php7.3-mysql php7.3-curl php7.3-xml \
 apt install php7.4-fpm php7.4-gd php7.4-mysql php7.4-curl php7.4-xml \
   php7.4-zip php7.4-intl libapache2-mod-php7.4 php7.4-mbstring php7.4-json \
   php7.4-bz2 php7.4 php7.4-cli php7.4-common php7.4-sqlite3 php7.4-bcmath php7.4-gmp
+  
+ # php 8.0
+ apt install php8.0-fpm php8.0-gd php8.0-mysql php8.0-curl php8.0-xml \
+  php8.0-zip php8.0-intl libapache2-mod-php8.0 php8.0-mbstring \
+  php8.0-bz2 php8.0 php8.0-cli php8.0-common php8.0-ssh2 php8.0-mcrypt php8.0-sqlite3 \
+  php8.0-bcmath php8.0-gmp
 
-systemctl enable php5.6-fpm php7.0-fpm php7.3-fpm php7.4-fpm
+systemctl enable php5.6-fpm php7.0-fpm php7.3-fpm
+systemctl enable php7.4-fpm
 
 # standard php version for apache is 7.0
 a2dismod php7.3 php5.6 php7.4
@@ -124,7 +131,7 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
     </IfModule>
 
 <IfDefine ENABLE_USR_LIB_CGI_BIN>
-  # ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+  ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
   <Directory "/usr/lib/cgi-bin">
     AllowOverride None
     Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch   
@@ -138,28 +145,12 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
 SecRuleEngine On
  <IfModule security2_module>
           Include /usr/share/modsecurity-crs/crs-setup.conf
-          IncludeOptional /usr/share/modsecurity-crs/rules/*.conf
+          Include /usr/share/modsecurity-crs/rules/*.conf
     </IfModule>
 EOF
 #enable cgi-bin
 a2enmod cgid cgi
 a2enconf cgi-enabled.conf
-
-cat <<EOF >> /etc/apache2/sites-available/000-default.conf
-SecRuleEngine On
- <IfModule security2_module>
-          Include /usr/share/modsecurity-crs/crs-setup.conf
-          IncludeOptional /usr/share/modsecurity-crs/rules/*.conf
-    </IfModule>
-EOF
-
-cat <<EOF >> /etc/apache2/sites-available/default-ssl.conf
-SecRuleEngine On
- <IfModule security2_module>
-          Include /usr/share/modsecurity-crs/crs-setup.conf
-          IncludeOptional /usr/share/modsecurity-crs/rules/*.conf
-    </IfModule>
-EOF
 
 
 ###################
@@ -178,7 +169,7 @@ cat <<EOF >> /etc/apache2/apache2.conf
 SecRuleEngine On
  <IfModule security2_module>
           Include /usr/share/modsecurity-crs/crs-setup.conf
-          IncludeOptional /usr/share/modsecurity-crs/rules/*.conf
+          Include /usr/share/modsecurity-crs/rules/*.conf
           ServerTokens Full
           SecServerSignature "Apache/2.2.16 (Unix)"
     </IfModule>
