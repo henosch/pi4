@@ -1,6 +1,11 @@
 #!/bin/bash
+# automatic root
+# [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
-[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+if [ $EUID -ne 0 ]; then
+    echo "$0 is not running as root. Try using sudo."
+    exit 2
+fi
 
 # error fix: udisksd[433]: failed to load module mdraid: libbd_mdraid.so.2
 apt install libblockdev-mdraid2 -y
