@@ -13,21 +13,22 @@
 
 sed -i 's/NOPASSWD/PASSWD/g' /etc/sudoers.d/010_pi-nopasswd
 echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
-
+service sudo restart
 
 #################
 # sshd settings #
 #################
 
-sudo -u mike mkdir .ssh && sudo chmod 700 .ssh
-sudo -u mike cat <<EOF >.ssh/authorized_keys
+mkdir -p /home/mike/.ssh && chmod 700 .ssh
+cat <<EOF >/home/mike/.ssh/authorized_keys
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgzf3yRLgztIX0GL5uJYSmsudJdgeGK4tXdt94g+quW mike@localhost
 EOF
 chmod 600 .ssh/authorized_keys
+chown mike:mike -R /home/mike/.ssh
 
 sed -i 's/#Port 22/Port 2022/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/g' /etc/ssh/sshd_config
-sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+# sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 60/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 240/g' /etc/ssh/sshd_config
 
@@ -42,7 +43,7 @@ timedatectl set-timezone Europe/Berlin
 # vi fix #
 ##########
 
-sudo -u mike cat <<EOF > .vimrc
+cat <<EOF > /home/mike/.vimrc
 :set timeout ttimeoutlen=100 timeoutlen=5000
 :set term=builtin_ansi
 :set nocompatible
@@ -113,8 +114,8 @@ curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 
 # fritzctl
-wget -qO - https://api.bintray.com/users/bpicode/keys/gpg/public.key | apt-key add -
-echo "deb https://dl.bintray.com/bpicode/fritzctl_deb buster main" | tee -a /etc/apt/sources.list
+# wget -qO - https://api.bintray.com/users/bpicode/keys/gpg/public.key | apt-key add -
+# echo "deb https://dl.bintray.com/bpicode/fritzctl_deb buster main" | tee -a /etc/apt/sources.list
 
 # rpi
 wget http://goo.gl/vewCLL -O /etc/apt/sources.list.d/rpimonitor.list
@@ -129,10 +130,6 @@ apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
 # needrestart -k
 
 apt update -y && apt upgrade -y
-
-# link sh to bash
-echo "dash dash/sh boolean false" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
@@ -153,6 +150,11 @@ ln -s /usr/bin/wajig /usr/bin/apt2
 sed -i 's/exec "\$SHELL"/exec "\$SHELL" \-\-login/g'  /usr/bin/byobu-shell
 sed -i 's/exec \/bin\/sh/exec \/bin\/bash \-\-login/g'  /usr/bin/byobu-shell
 echo "set -g status off" >>~/.byobu/.tmux.conf
+
+# link sh to bash
+echo "dash dash/sh boolean false" | debconf-set-selections
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
 # start 
 byobu-enable
 reboot
