@@ -125,7 +125,7 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
     </IfModule>
 
 <IfDefine ENABLE_USR_LIB_CGI_BIN>
-  ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+  # ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
   <Directory "/usr/lib/cgi-bin">
     AllowOverride None
     Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch   
@@ -139,7 +139,7 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
 SecRuleEngine On
  <IfModule security2_module>
           Include /usr/share/modsecurity-crs/crs-setup.conf
-          Include /usr/share/modsecurity-crs/rules/*.conf
+          IncludeOptional /usr/share/modsecurity-crs/rules/*.conf
     </IfModule>
 EOF
 #enable cgi-bin
@@ -150,7 +150,7 @@ cat <<EOF >> /etc/apache2/sites-available/000-default.conf
 SecRuleEngine On
  <IfModule security2_module>
           Include /usr/share/modsecurity-crs/crs-setup.conf
-          Include /usr/share/modsecurity-crs/rules/*.conf
+          IncludeOptional /usr/share/modsecurity-crs/rules/*.conf
     </IfModule>
 EOF
 
@@ -158,7 +158,7 @@ cat <<EOF >> /etc/apache2/sites-available/default-ssl.conf
 SecRuleEngine On
  <IfModule security2_module>
           Include /usr/share/modsecurity-crs/crs-setup.conf
-          Include /usr/share/modsecurity-crs/rules/*.conf
+          IncludeOptional /usr/share/modsecurity-crs/rules/*.conf
     </IfModule>
 EOF
 
@@ -179,7 +179,7 @@ cat <<EOF >> /etc/apache2/apache2.conf
 SecRuleEngine On
  <IfModule security2_module>
           Include /usr/share/modsecurity-crs/crs-setup.conf
-          Include /usr/share/modsecurity-crs/rules/*.conf
+          IncludeOptional /usr/share/modsecurity-crs/rules/*.conf
           ServerTokens Full
           SecServerSignature "Apache/2.2.16 (Unix)"
     </IfModule>
