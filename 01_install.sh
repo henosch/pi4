@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 # automatic root
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
@@ -14,6 +14,7 @@
 sed -i 's/NOPASSWD/PASSWD/g' /etc/sudoers.d/010_pi-nopasswd
 echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
 service sudo restart
+
 
 #################
 # sshd settings #
