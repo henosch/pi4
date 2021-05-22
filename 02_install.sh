@@ -161,8 +161,9 @@ a2enconf cgi-enabled.conf
 ###################
 
 # modsecurity config
-rm -rf /usr/share/modsecurity-crs
-git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
+# apt install 
+# rm -rf /usr/share/modsecurity-crs
+# git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
 cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
 cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf 
 sed -i "s/SecRuleEngine.*/SecRuleEngine On/g" /etc/modsecurity/modsecurity.conf
