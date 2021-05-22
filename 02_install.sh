@@ -134,7 +134,7 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
     </IfModule>
 
 <IfDefine ENABLE_USR_LIB_CGI_BIN>
-  ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+   ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
   <Directory "/usr/lib/cgi-bin">
     AllowOverride None
     Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch   
@@ -537,18 +537,14 @@ cat <<EOF > /etc/pihole/myblocklist.sh
 #!/bin/sh
 curl -s -L https://easylist.to/easylist/easylist.txt https://easylist.to/easylist/easyprivacy.txt \\
  https://easylist.to/easylist/fanboy-social.txt > adblock.unsorted
- 
 # Look for: ||domain.tld^
 sort -u adblock.unsorted | grep ^\|\|.*\^$ | grep -v \/ > adblock.sorted
- 
 # Remove extra chars and put list under lighttpd web root
 sed 's/[\|^]//g' < adblock.sorted > /var/www/html/adblock.hosts
- 
 # Remove files we no longer need
 rm adblock.unsorted adblock.sorted
 sudo chown pihole:pihole -R /etc/pihole/
 EOF
-
 chmod 755 /etc/pihole/myblocklist.sh
 
 # update AdBlock Lists (EasyList, EasyPrivacy, / Social Blocking)
