@@ -74,7 +74,7 @@ apt install --no-install-recommends xserver-xorg \
   raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone -y
 
 # error fix: Error getting user list from org.freedesktop.Accounts: GDBus.Error
-apt install accountsservice -y
+# apt install accountsservice
 
 # error fix
 mkdir /var/lib/lightdm/data
@@ -170,7 +170,7 @@ a2enconf cgi-enabled.conf
 # apt install modsecurity-crs
 # rm -rf /usr/share/modsecurity-crs
 # git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
-cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
+# cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
 cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf 
 sed -i "s/SecRuleEngine.*/SecRuleEngine On/g" /etc/modsecurity/modsecurity.conf
 
@@ -247,7 +247,8 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/f
 ###############
 
 apt install build-essential autoconf automake libtool flex bison debhelper binutils -y
-wget https://olivier.sessink.nl/jailkit/jailkit-2.21.tar.gz
+wget https://olivier.sessink.nl/jailkit/jailkit-2.21.tar.gz /root/jailkit-2.21.tar.gz
+cd /root/
 tar xvfz jailkit-2.22.tar.gz
 cd jailkit-2.22
 echo 5 > debian/compat
@@ -273,6 +274,7 @@ useradd -m julian
 echo "root:x:0:0:root:/root:/bin/bash" > /home/jail/etc/passwd
 echo "julian:x:1002:1002:,,,:/home/julian:/bin/bash" >> /home/jail/etc/passwd
 rm -rf /home/jail/etc/jailkit/ 
+cd -
 
 
 ##############
@@ -424,7 +426,7 @@ echo -e "$(crontab -l)\n20 4 * * 0    /usr/local/bin/autoupdatelocalroot" | cron
 wget -O /usr/local/bin/updateunboundconf https://raw.githubusercontent.com/henosch/pi4/main/updateunboundconf
 chmod 755 /usr/local/bin/updateunboundconf
 
-cat <<EOF >> /etc/unbound/unbound.conf.d/pi-hole.conf
+cat <<EOF > /etc/unbound/unbound.conf.d/pi-hole.conf
 server:
     # If no logfile is specified, syslog is used
     # logfile: "/var/log/unbound/unbound.log"
@@ -478,7 +480,6 @@ server:
     private-address: fe80::/10
 EOF
 
-systemctl restart unbound
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 # test it
@@ -570,11 +571,15 @@ cat <<EOF > /etc/pihole/update_myblocklist.sh
 pihole -g
 EOF
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
+
 chmod 755 /etc/pihole/update_myblocklist.sh
-echo -e "$(crontab -l)\n30 2 * * 6    pihole    /etc/pihole/update_myblocklist.sh" | crontab -u root -
+echo -e "$(crontab -l)\n30 2 * * 6    /etc/pihole/update_myblocklist.sh" | crontab -u root -
 echo -e "$(crontab -l)\n30 2 * * 7    /usr/local/bin/pihole updatePihole" | crontab -u root -
-chown pihole:pihole -R /etc/pihole/ 
+# chown 33:33 -R /etc/pihole/ 
 sh /etc/pihole/myblocklist.sh
+
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 # pihole without inside http server. We use apache 2
 curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended --disable-install-webserver
@@ -645,7 +650,7 @@ web.addons.1.allowupdate=false
 EOF
 disabled_shell
 
-cat <<EOF >> /etc/cron.d/rpimonitor
+cat <<EOF > /etc/cron.d/rpimonitor
 # run at 03:05 to update local repository database
 05 03 * * * root /usr/bin/apt-get update > /dev/null 2>&1
  
@@ -653,7 +658,7 @@ cat <<EOF >> /etc/cron.d/rpimonitor
 10 03 * * * root /usr/share/rpimonitor/scripts/updatePackagesStatus.pl
 EOF
 
-cat <<EOF >> /etc/cron.d/top3
+cat <<EOF > /etc/cron.d/top3
 * * * * * root cd /usr/share/rpimonitor/web/addons/top3; ./top3 > top3.html
 EOF
 
@@ -687,6 +692,7 @@ EOF
 mv /etc/shellinabox/options-enabled/00+Black\ on\ White.css /etc/shellinabox/options-enabled/00_Black\ on\ White.css \
  && mv /etc/shellinabox/options-enabled/00_White\ On\ Black.css /etc/shellinabox/options-enabled/00+White\ On\ Black.css
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 # backup pihole with rclone
 curl https://rclone.org/install.sh | sudo bash
