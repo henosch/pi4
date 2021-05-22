@@ -300,12 +300,11 @@ cat <<EOF >> /etc/influxdb/influxdb.conf
 EOF
 
 # export database
-# influxd backup -database influxdb /opt/data
+# influxd backup -portable -database influxdb /backup/dir
 
 # import database
 # sudo service influxdb stop
-# influxd restore -metadir /var/lib/influxdb/meta /opt/data
-# influxd restore -database influxdb -datadir /var/lib/influxdb/data /opt/data
+# influxd restore -portable -db influxdb /backup/dir
 # sudo service influxdb start
 
 
