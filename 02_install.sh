@@ -628,6 +628,17 @@ sed -i '12,42s/^#//' /etc/rpimonitor/template/network.conf
 # disable intern webserver
 sed -i 's/^#daemon.noserver\=1/daemon.noserver\=1/g' /etc/rpimonitor/daemon.conf
 
+<< disabled_shell
+# enable shellinbox
+cat <<EOF >> /etc/rpimonitor/data.conf
+web.addons.1.title=ShelleInABox
+web.addons.1.addons=custom
+web.addons.1.showtitle=false
+web.addons.1.url=http://localhost:8700/
+web.addons.1.allowupdate=false
+EOF
+disabled_shell
+
 cat <<EOF >> /etc/cron.d/rpimonitor
 # run at 03:05 to update local repository database
 05 03 * * * root /usr/bin/apt-get update > /dev/null 2>&1
