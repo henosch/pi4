@@ -1,11 +1,11 @@
 #!/bin/bash
 # automatic root
-# [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
-if [ $EUID -ne 0 ]; then
-    echo "$0 is not running as root. Try using sudo."
-    exit 2
-fi
+# if [ $EUID -ne 0 ]; then
+#   echo "$0 is not running as root. Try using sudo."
+#   exit 2
+# fi
 
 ####################
 # sudoers settings #
@@ -19,11 +19,11 @@ echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
 # sshd settings #
 #################
 
-mkdir ~/.ssh/ && chmod 700 ~/.ssh/
-cat <<EOF > ~/.ssh/authorized_keys
+sudo -u mike mkdir .ssh && sudo chmod 700 .ssh
+sudo -u mike cat <<EOF >.ssh/authorized_keys
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgzf3yRLgztIX0GL5uJYSmsudJdgeGK4tXdt94g+quW mike@localhost
 EOF
-chmod 600 ~/.ssh/authorized_keys
+chmod 600 .ssh/authorized_keys
 
 sed -i 's/#Port 22/Port 2022/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/g' /etc/ssh/sshd_config
@@ -42,15 +42,13 @@ timedatectl set-timezone Europe/Berlin
 # vi fix #
 ##########
 
-cat <<EOF > /home/mike/.vimrc
+sudo -u mike cat <<EOF > .vimrc
 :set timeout ttimeoutlen=100 timeoutlen=5000
 :set term=builtin_ansi
 :set nocompatible
 :set backspace=2
 EOF
 # syntax on
-
-chown mike:mike /home/mike/.vimrc
 
 cat <<EOF > /root/.vimrc
 :set timeout ttimeoutlen=100 timeoutlen=5000
@@ -131,7 +129,10 @@ apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
 # needrestart -k
 
 apt update -y && apt upgrade -y
-dpkg-reconfigure bash
+
+# link sh to bash
+echo "dash dash/sh boolean false" | debconf-set-selections
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
