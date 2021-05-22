@@ -51,7 +51,7 @@ apt install php7.4-fpm php7.4-gd php7.4-mysql php7.4-curl php7.4-xml \
 systemctl enable php5.6-fpm php7.0-fpm php7.3-fpm php7.4-fpm php8.0-fpm
 
 # standard php version for apache is 7.0
-a2dismod php7.3 php5.6 php7.4
+a2dismod php5.6 php7.3 php7.4 php8.0
 a2enmod  php7.0
 systemctl restart apache2
 
@@ -64,8 +64,8 @@ php -i | grep "Loaded Configuration File"
 # Install Xserver on rasp Image lite  #
 #######################################
 
-apt install --no-install-recommends xserver-xorg -y
-apt install raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone -y
+apt install --no-install-recommends xserver-xorg \
+  raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone -y
 
 # error fix: Error getting user list from org.freedesktop.Accounts: GDBus.Error
 apt install accountsservice -y
