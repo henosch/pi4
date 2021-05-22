@@ -314,6 +314,7 @@ update-rc.d grafana-server defaults
 ###################
 # fail2ban config #
 ###################
+# fail2ban-regex /var/www/nextcloud/data/nextcloud.log /etc/fail2ban/filter.d/nextcloud.conf
 
 # create a fail2ban Nextcloud filter
 cat <<EOF >/etc/fail2ban/filter.d/nextcloud.conf
@@ -392,6 +393,15 @@ enabled = true
 enabled = true
 EOF
 
+# If you don't install squid
+mkdir /var/log/squid
+touch /var/log/squid/access.log
+
+# if you don't install nextcloud
+mkdir -p /var/www/nextcloud/data/
+touch /var/www/nextcloud/data/nextcloud.log
+
+/etc/init.d/fail2ban restart
 
 ######################
 #   install unbound  #
