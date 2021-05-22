@@ -571,19 +571,18 @@ cat <<EOF > /etc/pihole/update_myblocklist.sh
 pihole -g
 EOF
 
-echo "nameserver 159.69.114.157" > /etc/resolv.conf
-
 chmod 755 /etc/pihole/update_myblocklist.sh
-echo -e "$(crontab -l)\n30 2 * * 6    /etc/pihole/update_myblocklist.sh" | crontab -u root -
-echo -e "$(crontab -l)\n30 2 * * 7    /usr/local/bin/pihole updatePihole" | crontab -u root -
-# chown 33:33 -R /etc/pihole/ 
-sh /etc/pihole/myblocklist.sh
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
-
 # pihole without inside http server. We use apache 2
 curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended --disable-install-webserver
 usermod -a -G pihole www-data
+
+chown pihole:pihole -R /etc/pihole/ 
+echo -e "$(crontab -l)\n30 2 * * 6    /etc/pihole/update_myblocklist.sh" | crontab -u root -
+echo -e "$(crontab -l)\n30 2 * * 7 pihole   /usr/local/bin/pihole updatePihole" | crontab -u root -
+
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 # Statistics 
 cat <<EOF > /etc/pihole/uniq_urls.sh
@@ -669,6 +668,7 @@ EOF
 ##################
 # install webmin #
 ##################
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 apt install libauthen-pam-perl apt-show-versions libio-pty-perl
 wget http://prdownloads.sourceforge.net/webadmin/webmin_1.974_all.deb
