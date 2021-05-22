@@ -143,7 +143,7 @@ apt install apache2 mariadb-server zip unzip build-essential \
   libmariadb-dev-compat libmariadb-dev libapache2-mod-security2 \
   php-apcu imagemagick php-imagick strace samba smbclient locate libsqlite3-dev \
   python3-pip python3-cffi nodejs vim lynx youtube-dl byobu ranger wajig \
-  awstats libgeo-ip-perl libgeo-ipfree-perl modsecurity-crs -y
+  awstats libgeo-ip-perl libgeo-ipfree-perl modsecurity-crs rclone -y
   
 # config wajig
 ln -s /usr/bin/wajig /usr/bin/apt2
