@@ -1,6 +1,11 @@
 #!/bin/bash
+# automatic root
+# [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
-[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+if [ $EUID -ne 0 ]; then
+    echo "$0 is not running as root. Try using sudo."
+    exit 2
+fi
 
 ####################
 # sudoers settings #
