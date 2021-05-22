@@ -1,9 +1,14 @@
 #!/usr/bin/bash
+# automatic root
+# [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
-[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+if [ $EUID -ne 0 ]; then
+   echo "$0 is not running as root. Try using sudo."
+  exit 2
+fi
 
 # error fix: udisksd[433]: failed to load module mdraid: libbd_mdraid.so.2
-apt install libblockdev-mdraid2 -y
+# apt install libblockdev-mdraid2 -y
 
 
 # install awesome vim for root
@@ -11,8 +16,9 @@ git clone --depth=1 https://github.com/amix/vimrc.git /root/.vim_runtime
 cp /root/.vim_runtime/vimrcs/basic.vim /root/.vimrc/
 
 # install awesome vim for mike
-sudo -u mike git clone --depth=1 https://github.com/amix/vimrc.git .vim_runtime
-sudo -u mike .vim_runtime/vimrcs/basic.vim .vimrc/
+git clone --depth=1 https://github.com/amix/vimrc.git /home/mike/.vim_runtime
+cp /home/mike/.vim_runtime/vimrcs/basic.vim /home/mike/.vimrc/
+chown mike:mike -R /home/mike
 
   
 #############################
