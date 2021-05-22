@@ -654,6 +654,7 @@ SHELLINABOX_DAEMON_START=1
 SHELLINABOX_PORT=8700
 SHELLINABOX_ARGS="--no-beep --localhost-only --disable-ssl -s /:LOGIN"
 EOF
+#ssh -g -R remote_port:localhost:local_port root@remote.server
 
 # terminal white on black
 mv /etc/shellinabox/options-enabled/00+Black\ on\ White.css /etc/shellinabox/options-enabled/00_Black\ on\ White.css \
