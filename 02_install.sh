@@ -1,14 +1,9 @@
 #!/bin/bash
-# automatic root
-# [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
-if [ $EUID -ne 0 ]; then
-    echo "$0 is not running as root. Try using sudo."
-    exit 2
-fi
+[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
 # error fix: udisksd[433]: failed to load module mdraid: libbd_mdraid.so.2
-# apt install libblockdev-mdraid2 -y
+apt install libblockdev-mdraid2 -y
 
 
 # install awesome vim for root
@@ -17,7 +12,8 @@ cp /root/.vim_runtime/vimrcs/basic.vim /root/.vimrc/
 
 # install awesome vim for mike
 sudo -u mike git clone --depth=1 https://github.com/amix/vimrc.git .vim_runtime
-sudo -u mike cp .vim_runtime/vimrcs/basic.vim .vimrc/
+sudo -u mike .vim_runtime/vimrcs/basic.vim .vimrc/
+
   
 #############################
 #  Install any php Version  #
@@ -27,35 +23,35 @@ sudo -u mike cp .vim_runtime/vimrcs/basic.vim .vimrc/
 apt install php5.6-fpm php5.6-gd php5.6-mysql php5.6-curl php5.6-xml \
   php5.6-zip php5.6-intl libapache2-mod-php5.6 php5.6-mbstring php5.6-json \
   php5.6-bz2 php5.6 php5.6-cli php5.6-common php5.6-ssh2 php5.6-mcrypt php5.6-sqlite3 \
-  php5.6-bcmath php5.6-gmp -y
+  php5.6-bcmath php5.6-gmp
 
 # php 7.0  
 apt install php7.0-fpm php7.0-gd php7.0-mysql php7.0-curl php7.0-xml \
   php7.0-zip php7.0-intl libapache2-mod-php7.0 php7.0-mbstring php7.0-json \
   php7.0-bz2 php7.0 php7.0-cli php7.0-common php7.0-ssh2 php7.0-mcrypt php7.0-sqlite3 \
-  php7.0-bcmath php7.0-gmp -y
+  php7.0-bcmath php7.0-gmp
 
 # php 7.3
 apt install php7.3-fpm php7.3-gd php7.3-mysql php7.3-curl php7.3-xml \
   php7.3-zip php7.3-intl libapache2-mod-php7.3 php7.3-mbstring php7.3-json \
   php7.3-bz2 php7.3 php7.3-cli php7.3-common php7.3-ssh2 php7.3-sqlite3 \
-  php7.3-bcmath php7.3-gmp -y
+  php7.3-bcmath php7.3-gmp
 
 # php 7.4
 apt install php7.4-fpm php7.4-gd php7.4-mysql php7.4-curl php7.4-xml \
   php7.4-zip php7.4-intl libapache2-mod-php7.4 php7.4-mbstring php7.4-json \
-  php7.4-bz2 php7.4 php7.4-cli php7.4-common php7.4-sqlite3 php7.4-bcmath php7.4-gmp -y
+  php7.4-bz2 php7.4 php7.4-cli php7.4-common php7.4-sqlite3 php7.4-bcmath php7.4-gmp
   
  # php 8.0
  apt install php8.0-fpm php8.0-gd php8.0-mysql php8.0-curl php8.0-xml \
   php8.0-zip php8.0-intl libapache2-mod-php8.0 php8.0-mbstring \
   php8.0-bz2 php8.0 php8.0-cli php8.0-common php8.0-ssh2 php8.0-mcrypt php8.0-sqlite3 \
-  php8.0-bcmath php8.0-gmp -y
+  php8.0-bcmath php8.0-gmp
 
 systemctl enable php5.6-fpm php7.0-fpm php7.3-fpm php7.4-fpm php8.0-fpm
 
 # standard php version for apache is 7.0
-a2dismod php5.6 php7.3 php7.4 php8.0
+a2dismod php7.3 php5.6 php7.4
 a2enmod  php7.0
 systemctl restart apache2
 
@@ -72,7 +68,7 @@ apt install --no-install-recommends xserver-xorg -y
 apt install raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone -y
 
 # error fix: Error getting user list from org.freedesktop.Accounts: GDBus.Error
-# apt install accountsservice -y
+apt install accountsservice -y
 
 # error fix
 mkdir /var/lib/lightdm/data
@@ -165,9 +161,8 @@ a2enconf cgi-enabled.conf
 ###################
 
 # modsecurity config
-# apt install modsecurity-crs
-# rm -rf /usr/share/modsecurity-crs
-# git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
+rm -rf /usr/share/modsecurity-crs
+git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
 cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
 cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf 
 sed -i "s/SecRuleEngine.*/SecRuleEngine On/g" /etc/modsecurity/modsecurity.conf
@@ -298,14 +293,6 @@ cat <<EOF >> /etc/influxdb/influxdb.conf
   database = "influxdb"
   typesdb = "/usr/share/collectd/types.db"
 EOF
-
-# export database
-# influxd backup -portable -database influxdb /backup/dir
-
-# import database
-# sudo service influxdb stop
-# influxd restore -portable -db influxdb /backup/dir
-# sudo service influxdb start
 
 
 #############
