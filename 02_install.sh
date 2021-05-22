@@ -146,6 +146,22 @@ EOF
 a2enmod cgid cgi
 a2enconf cgi-enabled.conf
 
+cat <<EOF >> /etc/apache2/sites-available/000-default.conf
+SecRuleEngine On
+ <IfModule security2_module>
+          Include /usr/share/modsecurity-crs/crs-setup.conf
+          Include /usr/share/modsecurity-crs/rules/*.conf
+    </IfModule>
+EOF
+
+cat <<EOF >> /etc/apache2/sites-available/default-ssl.conf
+SecRuleEngine On
+ <IfModule security2_module>
+          Include /usr/share/modsecurity-crs/crs-setup.conf
+          Include /usr/share/modsecurity-crs/rules/*.conf
+    </IfModule>
+EOF
+
 
 ###################
 # Apache security #
