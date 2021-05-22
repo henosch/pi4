@@ -11,3 +11,7 @@ EOF
 echo $USER
 echo $SUSER
 chmod 600 ~/testing/testme
+
+
+touch root.txt 
+sudo -u mike touch mike.txt
