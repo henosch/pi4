@@ -13,6 +13,7 @@ fi
 
 sed -i 's/NOPASSWD/PASSWD/g' /etc/sudoers.d/010_pi-nopasswd
 echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
+deluser pi sudo
 
 
 #################
@@ -38,26 +39,6 @@ sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 240/g' /etc/ssh/sshd_config
 ################
 
 timedatectl set-timezone Europe/Berlin
-
-##########
-# vi fix #
-##########
-
-cat <<EOF > /home/mike/.vimrc
-:set timeout ttimeoutlen=100 timeoutlen=5000
-:set term=builtin_ansi
-:set nocompatible
-:set backspace=2
-EOF
-# syntax on
-
-cat <<EOF > /root/.vimrc
-:set timeout ttimeoutlen=100 timeoutlen=5000
-:set term=builtin_ansi
-:set nocompatible
-:set backspace=2
-EOF
-# syntax on
 
 
 ###############
@@ -136,13 +117,48 @@ echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install apache2 mariadb-server zip unzip build-essential \
   apt-transport-https lsb-release npm git cifs-utils whois \
   python-pip libxml2-dev libxslt1-dev collectd dirmngr  \
-  sarg webalizer samba-common-bin fail2ban shellinabox \
+  sarg webalizer fail2ban shellinabox \
   libmariadb-dev-compat libmariadb-dev libapache2-mod-security2 \
   php-apcu imagemagick php-imagick strace locate libsqlite3-dev \
   python3-pip python3-cffi nodejs vim lynx youtube-dl byobu ranger wajig \
-  awstats libgeo-ip-perl libgeo-ipfree-perl modsecurity-crs rclone -y
+  awstats libgeo-ip-perl libgeo-ipfree-perl rclone -y
   
-  
+
+# we want from https://github.com/coreruleset/coreruleset the ruleset
+# if ! dpkg-query -W -f='${Status}' modsecurity-crs | grep "ok installed"; then apt install modsecurity-crs -y; fi
+if dpkg-query -W -f='${Status}' modsecurity-crs | grep "ok installed"; then apt remove modsecurity-crs -y; fi
+
+
+# install awesome vim for root
+git clone --depth=1 https://github.com/amix/vimrc.git /root/.vim_runtime
+cp /root/.vim_runtime/vimrcs/basic.vim /root/.vimrc
+
+# install awesome vim for mike
+git clone --depth=1 https://github.com/amix/vimrc.git /home/mike/.vim_runtime
+cp /home/mike/.vim_runtime/vimrcs/basic.vim /home/mike/.vimrc
+ 
+##########
+# vi fix #
+##########
+
+cat <<EOF >> /home/mike/.vimrc
+:set timeout ttimeoutlen=100 timeoutlen=5000
+:set term=builtin_ansi
+:set nocompatible
+EOF
+sed -i "s/backspace=.*/backspace=2/g" /root/.vimrc
+chown mike:mike -R /home/mike
+# syntax on
+
+cat <<EOF >> /root/.vimrc
+:set timeout ttimeoutlen=100 timeoutlen=5000
+:set term=builtin_ansi
+:set nocompatible
+EOF
+sed -i "s/backspace=.*/backspace=2/g" /home/mike/.vimrc
+# syntax on
+
+
 # config wajig
 ln -s /usr/bin/wajig /usr/bin/apt2
 
