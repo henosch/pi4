@@ -161,6 +161,8 @@ a2enconf cgi-enabled.conf
 git clone https://github.com/coreruleset/coreruleset /etc/apache2/owasp-modsecurity-crs
 cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf 
 sed -i "s/SecRuleEngine.*/SecRuleEngine On/g" /etc/modsecurity/modsecurity.conf
+mv /etc/apache2/owasp-modsecurity-crs/crs-setup.conf.example \ 
+	/etc/apache2/owasp-modsecurity-crs/crs-setup.conf
 mv /etc/apache2/owasp-modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example \ 
 	/etc/apache2/owasp-modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
 mv /etc/apache2/owasp-modsecurity-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example \
@@ -172,7 +174,7 @@ cat <<EOF >> /etc/apache2/apache2.conf
      SecRuleEngine On
      IncludeOptional /etc/apache2/owasp-modsecurity-crs/crs-setup.conf
      IncludeOptional /etc/apache2/owasp-modsecurity-crs/rules/*.conf
-     ServerTokens Full
+     ServerTokens OS
      SecServerSignature "Apache/2.2.16 (Unix)"
  </IfModule>
 ServerName 127.0.0.1
