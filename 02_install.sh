@@ -247,7 +247,7 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/f
 ###############
 
 apt install build-essential autoconf automake libtool flex bison debhelper binutils -y
-wget https://olivier.sessink.nl/jailkit/jailkit-2.21.tar.gz /root/jailkit-2.21.tar.gz
+wget -O /root/jailkit-2.21.tar.gz https://olivier.sessink.nl/jailkit/jailkit-2.21.tar.gz
 cd /root/
 tar xvfz jailkit-2.22.tar.gz
 cd jailkit-2.22
@@ -274,7 +274,7 @@ useradd -m julian
 echo "root:x:0:0:root:/root:/bin/bash" > /home/jail/etc/passwd
 echo "julian:x:1002:1002:,,,:/home/julian:/bin/bash" >> /home/jail/etc/passwd
 rm -rf /home/jail/etc/jailkit/ 
-cd -
+cd /home/mike
 
 
 ##############
@@ -409,7 +409,17 @@ touch /var/log/squid/access.log
 mkdir -p /var/www/nextcloud/data/
 touch /var/www/nextcloud/data/nextcloud.log
 
-/etc/init.d/fail2ban restart
+
+##################
+# samba unattend #
+##################
+
+echo "samba-common samba-common/workgroup string  WORKGROUP" | sudo debconf-set-selections
+echo "samba-common samba-common/dhcp boolean true" | sudo debconf-set-selections
+echo "samba-common samba-common/do_debconf boolean true" | sudo debconf-set-selections
+apt install samba -y
+apt install smbclient -y
+
 
 ######################
 #   install unbound  #
