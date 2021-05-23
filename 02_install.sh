@@ -10,16 +10,6 @@ fi
 # error fix: udisksd[433]: failed to load module mdraid: libbd_mdraid.so.2
 # apt install libblockdev-mdraid2 -y
 
-
-# install awesome vim for root
-git clone --depth=1 https://github.com/amix/vimrc.git /root/.vim_runtime
-cp /root/.vim_runtime/vimrcs/basic.vim /root/.vimrc/
-
-# install awesome vim for mike
-git clone --depth=1 https://github.com/amix/vimrc.git /home/mike/.vim_runtime
-cp /home/mike/.vim_runtime/vimrcs/basic.vim /home/mike/.vimrc/
-chown mike:mike -R /home/mike
-
   
 #############################
 #  Install any php Version  #
@@ -74,7 +64,7 @@ apt install --no-install-recommends xserver-xorg \
   raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone -y
 
 # error fix: Error getting user list from org.freedesktop.Accounts: GDBus.Error
-# apt install accountsservice
+apt install accountsservice
 
 # error fix
 mkdir /var/lib/lightdm/data
@@ -131,7 +121,7 @@ sed -i 's/hdmi_mode.*/hdmi_mode=16/g' /boot/config.txt
 # enable cgi-bin
 cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
 <IfModule mod_alias.c>
-    <IfModule mod_cgi.c>
+	<IfModule mod_cgi.c>
         Define ENABLE_USR_LIB_CGI_BIN
     </IfModule>
 
@@ -151,12 +141,13 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
 </IfDefine>
 </IfModule>
 
-SecRuleEngine On
- <IfModule security2_module>
-          Include /usr/share/modsecurity-crs/crs-setup.conf
-          Include /usr/share/modsecurity-crs/rules/*.conf
-    </IfModule>
+<IfModule security2_module>
+	SecRuleEngine On
+</IfModule>
 EOF
+# disable old config serve-cgi-bin
+a2disconf serve-cgi-bin
+
 #enable cgi-bin
 a2enmod cgid cgi
 a2enconf cgi-enabled.conf
@@ -167,25 +158,28 @@ a2enconf cgi-enabled.conf
 ###################
 
 # modsecurity config
-# apt install modsecurity-crs
-# rm -rf /usr/share/modsecurity-crs
-# git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
-# cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
+git clone https://github.com/coreruleset/coreruleset /etc/apache2/owasp-modsecurity-crs
 cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf 
 sed -i "s/SecRuleEngine.*/SecRuleEngine On/g" /etc/modsecurity/modsecurity.conf
+mv /etc/apache2/owasp-modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example \ 
+	/etc/apache2/owasp-modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+mv /etc/apache2/owasp-modsecurity-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example \
+	/etc/apache2/owasp-modsecurity-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
 
 # Apache security2 modul config
 cat <<EOF >> /etc/apache2/apache2.conf
-SecRuleEngine On
- <IfModule security2_module>
-          Include /etc/modsecurity/crs/crs-setup.conf
-          Include /usr/share/modsecurity-crs/rules/*.conf
-          ServerTokens Full
-          SecServerSignature "Apache/2.2.16 (Unix)"
-    </IfModule>
-
+<IfModule security2_module>
+     SecRuleEngine On
+     IncludeOptional /etc/apache2/owasp-modsecurity-crs/crs-setup.conf
+     IncludeOptional /etc/apache2/owasp-modsecurity-crs/rules/*.conf
+     ServerTokens Full
+     SecServerSignature "Apache/2.2.16 (Unix)"
+ </IfModule>
 ServerName 127.0.0.1
 EOF
+# test it see apache error log
+# https://your_site.com/?param="><script>alert(1);</script>
+
 
 ################
 # Apache modul #
@@ -247,7 +241,7 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/f
 ###############
 
 apt install build-essential autoconf automake libtool flex bison debhelper binutils -y
-wget -O /root/jailkit-2.21.tar.gz https://olivier.sessink.nl/jailkit/jailkit-2.21.tar.gz
+wget -O /root/jailkit-2.22.tar.gz https://olivier.sessink.nl/jailkit/jailkit-2.22.tar.gz
 cd /root/
 tar xvfz jailkit-2.22.tar.gz
 cd jailkit-2.22
@@ -417,8 +411,7 @@ touch /var/www/nextcloud/data/nextcloud.log
 echo "samba-common samba-common/workgroup string  WORKGROUP" | sudo debconf-set-selections
 echo "samba-common samba-common/dhcp boolean true" | sudo debconf-set-selections
 echo "samba-common samba-common/do_debconf boolean true" | sudo debconf-set-selections
-apt install samba -y
-apt install smbclient -y
+apt install samba samba-common-bin smbclient -y
 
 
 ######################
@@ -594,26 +587,6 @@ echo -e "$(crontab -l)\n30 2 * * 7 pihole   /usr/local/bin/pihole updatePihole" 
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
-# Statistics 
-cat <<EOF > /etc/pihole/uniq_urls.sh
-#!/usr/bin/bash
-# Check all lists for unique ones and show the percentage
-
-[ "$UID" -eq 0  ] || exec sudo bash "$0" "$@"
-
-cd /etc/pihole/
-cat *.domains | sort | uniq -u > all_adlist_urls_sorted_unique.txt
-
-# Result
-T1=$(cat *.domains | wc -l)
-T2=$(cat all_adlist_urls_sorted_unique.txt | wc -l)
-S=$(python -c "p = $T2 / $T1 * 100; print(p)")
-printf "URLs total:		%10d\n" $T1
-printf "URLs unique:	%10d\n" $T2
-printf "Percentage:	  %8.1f %%\n" $S
-EOF
-chmod +x /etc/pihole/uniq_urls.sh
-
 # useful commands
 # sqlite3 /etc/pihole/gravity.db "SELECT domain FROM vw_blacklist;"
 # sqlite3 /etc/pihole/gravity.db "SELECT domain FROM vw_whitelist;"
@@ -648,16 +621,16 @@ sed -i '12,42s/^#//' /etc/rpimonitor/template/network.conf
 # disable intern webserver
 sed -i 's/^#daemon.noserver\=1/daemon.noserver\=1/g' /etc/rpimonitor/daemon.conf
 
-<< disabled_shell
+
 # enable shellinbox
-cat <<EOF >> /etc/rpimonitor/data.conf
-web.addons.1.title=ShelleInABox
-web.addons.1.addons=custom
-web.addons.1.showtitle=false
-web.addons.1.url=http://localhost:8700/
-web.addons.1.allowupdate=false
-EOF
-disabled_shell
+# cat <<EOF >> /etc/rpimonitor/data.conf
+# web.addons.1.title=ShelleInABox
+# web.addons.1.addons=custom
+# web.addons.1.showtitle=false
+# web.addons.1.url=http://localhost:8700/
+# web.addons.1.allowupdate=false
+# EOF
+
 
 cat <<EOF > /etc/cron.d/rpimonitor
 # run at 03:05 to update local repository database
@@ -680,9 +653,9 @@ EOF
 ##################
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
-apt install libauthen-pam-perl apt-show-versions libio-pty-perl
-wget http://prdownloads.sourceforge.net/webadmin/webmin_1.974_all.deb
-dpkg --install webmin_1.974_all.deb
+apt install libauthen-pam-perl apt-show-versions libio-pty-perl -y
+wget -O /root/webmin_1.974_all.deb http://prdownloads.sourceforge.net/webadmin/webmin_1.974_all.deb
+dpkg --install /root/webmin_1.974_all.deb
 
 
 ##############
@@ -690,6 +663,7 @@ dpkg --install webmin_1.974_all.deb
 ##############
 
 # shellinabox config file
+sudo -i
 cp /etc/default/shellinabox /etc/default/shellinabox_org
 cat <<EOF > /etc/default/shellinabox
 SHELLINABOX_DAEMON_START=1
