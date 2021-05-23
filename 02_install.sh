@@ -178,7 +178,7 @@ sed -i "s/SecRuleEngine.*/SecRuleEngine On/g" /etc/modsecurity/modsecurity.conf
 cat <<EOF >> /etc/apache2/apache2.conf
 SecRuleEngine On
  <IfModule security2_module>
-          Include /usr/share/modsecurity-crs/crs-setup.conf
+          Include /etc/modsecurity/crs/crs-setup.conf
           Include /usr/share/modsecurity-crs/rules/*.conf
           ServerTokens Full
           SecServerSignature "Apache/2.2.16 (Unix)"
@@ -586,7 +586,7 @@ echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 # Statistics 
 cat <<EOF > /etc/pihole/uniq_urls.sh
-#!/bin/bash
+#!/usr/bin/bash
 # Check all lists for unique ones and show the percentage
 
 [ "$UID" -eq 0  ] || exec sudo bash "$0" "$@"
