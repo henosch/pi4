@@ -138,9 +138,10 @@ apt install apache2 mariadb-server zip unzip build-essential \
   python-pip libxml2-dev libxslt1-dev collectd dirmngr  \
   sarg webalizer samba-common-bin fail2ban shellinabox \
   libmariadb-dev-compat libmariadb-dev libapache2-mod-security2 \
-  php-apcu imagemagick php-imagick strace samba smbclient locate libsqlite3-dev \
+  php-apcu imagemagick php-imagick strace locate libsqlite3-dev \
   python3-pip python3-cffi nodejs vim lynx youtube-dl byobu ranger wajig \
   awstats libgeo-ip-perl libgeo-ipfree-perl modsecurity-crs rclone -y
+  
   
 # config wajig
 ln -s /usr/bin/wajig /usr/bin/apt2
