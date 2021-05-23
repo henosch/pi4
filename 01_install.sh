@@ -1,11 +1,11 @@
 #!/usr/bin/bash
 # automatic root
-[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+# [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
-# if [ $EUID -ne 0 ]; then
-#   echo "$0 is not running as root. Try using sudo."
-#   exit 2
-# fi
+if [ $EUID -ne 0 ]; then
+   echo "$0 is not running as root. Try using sudo."
+  exit 2
+fi
 
 ####################
 # sudoers settings #
@@ -13,7 +13,6 @@
 
 sed -i 's/NOPASSWD/PASSWD/g' /etc/sudoers.d/010_pi-nopasswd
 echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
-service sudo restart
 
 
 #################
@@ -150,12 +149,9 @@ ln -s /usr/bin/wajig /usr/bin/apt2
 # config byobu
 sed -i 's/exec "\$SHELL"/exec "\$SHELL" \-\-login/g'  /usr/bin/byobu-shell
 sed -i 's/exec \/bin\/sh/exec \/bin\/bash \-\-login/g'  /usr/bin/byobu-shell
-echo "set -g status off" >>~/.byobu/.tmux.conf
 
 # link sh to bash
 echo "dash dash/sh boolean false" | debconf-set-selections
 DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
-# start 
-byobu-enable
 reboot
