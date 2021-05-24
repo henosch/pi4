@@ -102,7 +102,9 @@ systemctl start vncserver-x11-serviced.service
 # error fix (Display Resulotion 1024x764) with
 # raspi-config or this: 
 
-sed -i 's/hdmi_mode.*/hdmi_mode=16/g' /boot/config.txt
+sed -i 's/#hdmi_mode.*/hdmi_mode=16/g' /boot/config.txt
+sed -i 's/#hdmi_force_hotplug/hdmi_force_hotplug/g' /boot/config.txt
+sed -i 's/#hdmi_group.*/hdmi_group=2/g' /boot/config.txt
 
 
 #############
@@ -287,7 +289,8 @@ service influxdb start
 /bin/systemctl daemon-reload
 /bin/systemctl enable influxdb
 
-influx -execute 'CREATE DATABASE influxdb'
+# influx -execute 'CREATE DATABASE influxdb'
+influxd restore -portable -db influxdb /mnt/nas/---install---/fritz_influxdb/
 
 cp /etc/influxdb/influxdb.conf /etc/influxdb/influxdb.conf_org
 sed -i 's/\[\[collectd\]\]/#\[\[collectd\]\]/g' /etc/influxdb/influxdb.conf
@@ -414,6 +417,34 @@ echo "samba-common samba-common/workgroup string  WORKGROUP" | sudo debconf-set-
 echo "samba-common samba-common/dhcp boolean true" | sudo debconf-set-selections
 echo "samba-common samba-common/do_debconf boolean true" | sudo debconf-set-selections
 apt install samba samba-common-bin smbclient -y
+
+
+################
+# config samba #
+################
+
+mkdir /mnt/samba
+
+cp /etc/samba/smb.conf /etc/samba/smb.conf_org
+cat <<EOF > /etc/samba/smb.conf
+[pi4]
+   comment = samba share
+   path = /mnt/samba
+   guest ok = no
+   browseable = yes 
+   create mask = 0600
+   directory mask = 0700
+   valid users = mike
+
+[root]
+    comment = root
+    path = /
+    guest ok = no
+    browseable = yes
+    valid users = mike
+    read only = yes
+EOF
+
 
 
 ######################
@@ -545,6 +576,7 @@ https://raw.githubusercontent.com/AdguardTeam/cname-trackers/master/combined_dis
 https://github.com/RPiList/specials/blob/master/Blocklisten/Corona-Blocklist
 https://raw.githubusercontent.com/RPiList/specials/master/Blocklisten/Phishing-Angriffe
 https://raw.githubusercontent.com/henosch/my-pihole-lists/master/block_google_updates.txt
+https://raw.githubusercontent.com/henosch/my-pihole-lists/master/blacklist.txt
 EOF
 
 # pihole-FTL.conf
@@ -598,6 +630,9 @@ echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # sqlite3 /etc/pihole/gravity.db ".schema domainlist"
 # sqlite3 /etc/pihole/gravity.db ".schema"
 
+# statistic
+wget -O /etc/pihole/uniq_urls.sh https://raw.githubusercontent.com/henosch/pi4/main/uniq_urls.sh 
+chmod +x /etc/pihole/uniq_urls.sh
 
 #######################
 # install rpi monitor #
@@ -679,6 +714,8 @@ mv /etc/shellinabox/options-enabled/00+Black\ on\ White.css /etc/shellinabox/opt
  && mv /etc/shellinabox/options-enabled/00_White\ On\ Black.css /etc/shellinabox/options-enabled/00+White\ On\ Black.css
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
+
+if dpkg-query -W -f='${Status}' needrestart | grep "ok installed"; then apt remove needrestart -y; fi
 
 # backup pihole with rclone
 curl https://rclone.org/install.sh | sudo bash
