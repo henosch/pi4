@@ -109,6 +109,7 @@ apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
 
 # Newer kernel available
 # needrestart -k
+# remove needrestart, because kernel message pop up every time
 
 apt update -y && apt upgrade -y
 
