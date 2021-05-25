@@ -717,6 +717,53 @@ echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 if dpkg-query -W -f='${Status}' needrestart | grep "ok installed"; then apt remove needrestart -y; fi
 
+
+#####################
+# Install nextcloud #
+#####################
+
+useradd -M -s /bin/false nextcloud
+cat <<EOF >/etc/php/7.3/fpm/pool.d/nextcloud.conf
+[nextcloud]
+user = nextcloud
+group = nextcloud
+
+listen = /var/run/php/php7.3-fpm.nextcloud.sock
+
+listen.owner = www-data
+listen.group = www-data
+
+php_admin_value[open_basedir] = /var/www/nextcloud/:/tmp/:/dev/
+
+env[HOSTNAME] = $HOSTNAME
+env[PATH] = /usr/local/bin:/usr/bin:/bin
+env[TMP] = /tmp
+env[TMPDIR] = /tmp
+env[TEMP] = /tmp
+
+security.limit_extensions =
+php_admin_value[cgi.fix_pathinfo] = 1
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 3
+pm.min_spare_servers = 2
+pm.max_spare_servers = 4
+pm.max_requests = 200
+EOF
+
+#PHP Mod fpm/php.ini
+cp /etc/php/7.3/fpm/php.ini /etc/php/7.3/fpm/php.ini_org
+sed -i "s/memory_limit = 128M/memory_limit = 512M/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.enable=.*/opcache.enable=1/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.enable_cli=.*/opcache.enable_cli=1/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.interned_strings_buffer=.*/opcache.interned_strings_buffer=8/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.max_accelerated_files=.*/opcache.max_accelerated_files=10000/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=128/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/fpm/php.ini
+
+
 # backup pihole with rclone
 curl https://rclone.org/install.sh | sudo bash
 curl https://raw.githubusercontent.com/henosch/rclone-backup/master/install.sh | sudo bash
