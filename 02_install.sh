@@ -214,8 +214,8 @@ print "Content-type: text/html\n\n";
 print "<BODY BGCOLOR=black>\n";
 print "<FONT COLOR=white><P>";
 print "<tt>\n";
-foreach $key (sort keys(%ENV)) {
-      print "$key = $ENV{$key}<BR>\n";
+foreach \$key (sort keys(%ENV)) {
+      print "\$key = \$ENV{\$key}<BR>\n";
 }
 print "</FONT></BODY>"; 
 EOF
