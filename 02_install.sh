@@ -279,6 +279,7 @@ service influxdb start
 /bin/systemctl enable influxdb
 
 # influx -execute 'CREATE DATABASE influxdb'
+# influxd backup -portable -db influxdb /mnt/nas/---install---/fritz_influxdb/
 influxd restore -portable -db influxdb /mnt/nas/---install---/fritz_influxdb/
 
 cp /etc/influxdb/influxdb.conf /etc/influxdb/influxdb.conf_org
