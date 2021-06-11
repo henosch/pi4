@@ -146,6 +146,13 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
 <IfModule security2_module>
 	SecRuleEngine On
 </IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</IfModule>
+
 EOF
 # disable old config serve-cgi-bin
 a2disconf serve-cgi-bin
