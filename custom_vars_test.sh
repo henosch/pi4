@@ -4,6 +4,7 @@
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 
 if exist ~/testing/testme then rm -r ~/testing/
+fi
 # local vars testing
 mkdir ~/testing/ && chmod 700 ~/testing/
 cat <<EOF > ~/testing/testme
