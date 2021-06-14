@@ -6,13 +6,10 @@
 # local vars testing
 mkdir ~/testing/ && chmod 700 ~/testing/
 cat <<EOF > ~/testing/testme
-$SUSER
+#!/bin/bash
+user1=trump
+user2=biden
 EOF
-echo $USER
-echo $SUSER
-chmod 600 ~/testing/testme
-
-
-touch root.txt 
-sudo -u mike touch mike.txt
-mkdir Heft 
+sh /testing/testme
+echo $user1
+echo $user2
