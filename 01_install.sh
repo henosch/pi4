@@ -29,7 +29,7 @@ chown mike:mike -R /home/mike/.ssh
 
 sed -i 's/#Port 22/Port 2022/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/g' /etc/ssh/sshd_config
-# sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 60/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 240/g' /etc/ssh/sshd_config
 
