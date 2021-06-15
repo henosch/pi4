@@ -44,6 +44,8 @@ database=nextcloud (database name)
 fritz_pw=fritz.box login password
 fritz_coll=collect password (fritz.box) 
 smb_pw=your samba user password
+# adminer language (default english)
+adminer=latest.php
 EOF
 ```
 # Script owner custom vars (you must set it) 
