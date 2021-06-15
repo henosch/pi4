@@ -11,6 +11,9 @@ fi
 # used in this script: 
 #
 # suname=username
+# jail_user=jail user
+# jail_pw=jail password
+
 
 
 . /root/custom_vars
