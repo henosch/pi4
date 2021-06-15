@@ -11,7 +11,7 @@ fi
 # used in this script: 
 #
 # suname=username
-# ssk=cat id_rsa.pub and write here
+# ssk=cat id_rsa.pub
 # timez=your timezone
 # ss="WLAN ID"
 # ssp=WLAN password
@@ -119,10 +119,6 @@ apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
 # recommend package #
 #####################
 
-# Newer kernel available
-# needrestart -k
-# remove needrestart, because kernel message pop up every time
-
 apt update -y && apt upgrade -y
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
@@ -136,12 +132,11 @@ apt install apache2 mariadb-server zip unzip build-essential \
   python3-pip python3-cffi nodejs vim lynx youtube-dl byobu ranger wajig \
   awstats libgeo-ip-perl libgeo-ipfree-perl rclone -y
   
-
 # we want from https://github.com/coreruleset/coreruleset the ruleset
 # if ! dpkg-query -W -f='${Status}' modsecurity-crs | grep "ok installed"; then apt install modsecurity-crs -y; fi
 if dpkg-query -W -f='${Status}' modsecurity-crs | grep "ok installed"; then apt remove modsecurity-crs -y; fi
 
-
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # install awesome vim for root
 git clone --depth=1 https://github.com/amix/vimrc.git /root/.vim_runtime
 cp /root/.vim_runtime/vimrcs/basic.vim /root/.vimrc
