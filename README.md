@@ -9,7 +9,7 @@
 + adduser $suname sudo
 + exit
 + exit
-+ ssh mike@raspberrypi
++ ssh $suname@raspberrypi
 + sudo -i
 
 # Set your own data with vars
