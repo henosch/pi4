@@ -1478,7 +1478,10 @@ sudo -i
 # fritzctl #
 ############
 
-dpkg -i /mnt/nas/---deb---/fritzctl_1.4.23_armhf.deb
+# dpkg -i /mnt/nas/---deb---/fritzctl_1.4.23_armhf.deb
+wget -O /root/fritzctl_1.4.23_armhf.deb https://github.com/henosch/pi4/raw/main/apk/fritzctl_1.4.23_armhf.deb
+dpkg -i  /root/fritzctl_1.4.23_armhf.deb
+
 
 # fritzctl configure
 cp /etc/fritzctl/fritzctl.json /etc/fritzctl/fritzctl.json_org
