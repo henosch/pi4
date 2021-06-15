@@ -43,6 +43,8 @@ fi
 # my Network #
 ##############
 
+if [ -z "$skip" ]
+	then
 cat <<EOF >>/etc/hosts
 $local_net.254	fritz.box
 $local_net.150	nas
@@ -56,24 +58,33 @@ $local_net.27   hue
 $local_net.28	boombox
 $local_net.32	firestick
 EOF
+      exit
+fi
 
 ################
 # mount my NAS #
 ################
 
+if [ -z "$skip" ]
+	then
 mkdir /mnt/nas
 mount -t cifs //$local_net.150/freeway/Linux/pi /mnt/nas -o username=$suname,password=$nas_pw,rw,vers=1.0
 echo "//$local_net.150/freeway/Linux/pi /mnt/nas cifs  username=$suname,password=$nas_pw,vers=1.0    0    0" >> /etc/fstab
-
+      exit
+fi
 
 ############
 # Language #
 ############
 
+if [ -z "$skip" ]
+	then
 sed -i "s/en_GB.UTF-8 UTF-8/# en_GB.UTF-8 UTF-8/g" /etc/locale.gen
 sed -i "s/# de_DE ISO-8859-1/de_DE ISO-8859-1/g" /etc/locale.gen
 sed -i "s/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/g" /etc/locale.gen
 dpkg-reconfigure -f noninteractive locales
+	exit
+fi
 
 
 #############################
@@ -298,7 +309,7 @@ Header always set X-XSS-Protection "1; mode=block"
 
 </VirtualHost>
 EOF
-wget -O /var/www/html/adminer.php https://www.adminer.org/latest-de.php
+wget -O /var/www/html/adminer.php https://www.adminer.org/$adminer
 a2ensite $ddns1.conf
 
 
@@ -579,7 +590,11 @@ mkdir /var/www/webalizer/standard
 chown -R www-data:www-data /var/www/webalizer
 chmod 750 /var/www/webalizer/
 
+if [ -z "$skip" ]
+	then
 cp -r /mnt/nas/etc/webalizer/* /etc/webalizer/
+	exit 
+fi
 
 chown www-data:www-data /var/log/apache2/*
 
@@ -663,6 +678,8 @@ EOF
 # dyndns update #
 #################
 
+if [ -z "$skip" ]
+	then
 cat <<EOF > /etc/default/ddclient
 run_dhclient="false"
 run_ipup="false"
@@ -712,7 +729,8 @@ apt install ddclient -y
 systemctl daemon-reload
 systemctl restart ddclient
 systemctl enable ddclient
-
+	exit
+fi
 
 ##########################
 # Apache letsencrypt SSL #
@@ -778,7 +796,7 @@ cd jailkit-2.22
 echo 5 > debian/compat
 ./debian/rules binary
 cd ..
-dpkg -i jailkit_2.22-1_*.deb
+dpkg -i jailkit_2.22*.deb
 mkdir /home/jail
 chown root:root /home/jail
 chmod 0755 /home/jail
@@ -816,9 +834,20 @@ service influxdb start
 /bin/systemctl daemon-reload
 /bin/systemctl enable influxdb
 
-# influx -execute 'CREATE DATABASE influxdb'
+# influx backup Syntax
 # influxd backup -portable -db influxdb /mnt/nas/---install---/fritz_influxdb/
+
+If ! [ -z "$skip" ]
+	then
+influx -execute 'CREATE DATABASE influxdb'
+	exit
+fi
+
+if [ -z "$skip" ]
+	then
 influxd restore -portable -db influxdb /mnt/nas/---install---/fritz_influxdb/
+	exit
+fi
 
 cp /etc/influxdb/influxdb.conf /etc/influxdb/influxdb.conf_org
 sed -i 's/\[\[collectd\]\]/#\[\[collectd\]\]/g' /etc/influxdb/influxdb.conf
@@ -1344,6 +1373,8 @@ mv /usr/local/share/fb_tools/fb_config.php /usr/local/share/fb_tools/fb_config.p
 # ssh key $gb #
 ###############
 
+if [ -z "$skip" ]
+	then
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install keychain libpam-ssh-agent-auth
 cp -R /mnt/nas/home/$suname/scripts/ .
@@ -1372,6 +1403,8 @@ sudo -u $suname echo -e "$(crontab -l)\n00 00 * * *    bash    ~/scripts/web_$gb
 sudo -u $suname echo -e "$(crontab -l)\n59 23 30 * *   bash    ~/scripts/web_$gb/logrotate.sh >>/var/log/web_log 2>&1" | crontab -u $suname -
 touch /var/log/web_log
 chown $suname:$suname /var/log/web_log
+	exit
+fi
 
 
 ##################
@@ -1379,7 +1412,6 @@ chown $suname:$suname /var/log/web_log
 ##################
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
-# git clone https://github.com/iprobedroid/swgoh-arena-tracker.git swgoh_tracker
 apt install docker.io -y
 
 cat <<EOF >>/etc/docker/daemon.json
@@ -1387,9 +1419,14 @@ cat <<EOF >>/etc/docker/daemon.json
    "dns": ["172.0.0.1", "80.241.218.68"]
 }
 EOF
+
+if [ -z "$skip" ]
+	then
 sudo -u $suname cp -R /mnt/nas/home/$suname/swgoh_tracker . 
 cd /home/$suname/swgoh_tracker
 sudo -u $suname sh update_all_docker.sh 24
+	exit
+fi
 
 
 #############################
@@ -1411,15 +1448,23 @@ mysql -u root -p$root_pw -e "GRANT ALL PRIVILEGES ON $database.* TO '$sql_user'@
 mysql -u root -p$root_pw -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$root_pw';FLUSH PRIVILEGES;"
 
 # remote access mysql
+if [ -z "$skip" ]
+	then
 sed -i 's/127.0.0.1/$local_net.29/g' /etc/mysql/mariadb.conf.d/50-server.cnf
+	exit
+fi
 
 
 ###############
 # custom motd #
 ###############
 
+if [ -z "$skip" ]
+	then
 cp /mnt/nas/etc/update-motd.d/10-uname /etc/update-motd.d/10-uname
 rm /etc/motd
+	exit
+fi
 
 # mv /usr/bin/vim.tiny /usr/bin/vim.tiny_org
 # ln -s /usr/bin/vi /usr/bin/vim.tiny
