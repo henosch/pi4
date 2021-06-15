@@ -27,15 +27,15 @@ fi
 cat <<EOF >>/etc/hosts
 $local_net.254	fritz.box
 $local_net.150	nas
-$local_net.1		macsdero
-$local_net.21	  oneplus6t
-$local_net.22	  drucker
-$local_net.23	  cubot
-$local_net.26	  redmipro
-$local_net.25	  chromecast
-$local_net.27	  hue
-$local_net.28	  boombox
-$local_net.32	  firestick
+$local_net.1    macsdero
+$local_net.21	oneplus6t
+$local_net.22	drucker
+$local_net.23	cubot
+$local_net.26	redmipro
+$local_net.25	chromecast
+$local_net.27   hue
+$local_net.28	boombox
+$local_net.32	firestick
 EOF
 
 ################
@@ -697,9 +697,9 @@ apt install python3-certbot-apache -y
 certbot --noninteractive --agree-tos  --no-redirect -m $ssl_email -d $ddns1,$ddns2,$ddns4,$ddns3,$ddns5 --apache
 
 
-###################
+#####################
 # Install WireGuard #
-###################
+#####################
 
 mkdir -p /etc/pivpn/wireguard/setupVars.conf 
 cat <<EOF >> /etc/pivpn/wireguard/setupVars.conf 
@@ -1130,6 +1130,7 @@ echo "nameserver 159.69.114.157" > /etc/resolv.conf
 wget -O /etc/pihole/uniq_urls.sh https://raw.githubusercontent.com/henosch/pi4/main/uniq_urls.sh 
 chmod +x /etc/pihole/uniq_urls.sh
 
+
 #######################
 # install rpi monitor #
 #######################
@@ -1191,9 +1192,9 @@ wget -O /root/webmin_1.974_all.deb http://prdownloads.sourceforge.net/webadmin/w
 dpkg --install /root/webmin_1.974_all.deb
 
 
-##############
+###############
 # shellinabox #
-##############
+###############
 
 # shellinabox config file
 sudo -i
@@ -1264,6 +1265,7 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/f
 # fritzbox tools #
 ##################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 wget -O fb-tools.deb 'http://www.mengelke.de'`wget -q -O- http://www.mengelke.de/Projekte/FritzBoxTools.html \
 | grep -a -o -E '/Download;fb-tools.deb\\?[a-f0-9]+'`
 # dpkg -i /mnt/nas/---deb---/fb-tools.deb 
@@ -1301,10 +1303,11 @@ mv /usr/local/share/fb_tools/fb_config.php /usr/local/share/fb_tools/fb_config.p
 # fb_tools my websync AVM https://download.avm.de/fritzbox/fritzbox-7582 -gm -d
 
 
-#####################
+###############
 # ssh key $gb #
-#####################
+###############
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install keychain libpam-ssh-agent-auth
 cp -R /mnt/nas/home/$suname/scripts/ .
 cp /mnt/nas/---install---/config .ssh/
@@ -1338,6 +1341,7 @@ chown $suname:$suname /var/log/web_log
 # install docker #
 ##################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # git clone https://github.com/iprobedroid/swgoh-arena-tracker.git swgoh_tracker
 apt install docker.io -y
 
@@ -1458,6 +1462,7 @@ echo -e "$(crontab -l)\n0 7 * * 2    sqlite3 /etc/pihole/pihole-FTL.db '.backup 
 # fritzcollectd #
 #################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 yes | pip install fritzcollectd
 cp /etc/collectd/collectd.conf /etc/collectd/collectd.conf_org
 cat <<EOF >> /etc/collectd/collectd.conf
@@ -1489,5 +1494,6 @@ if dpkg-query -W -f='${Status}' modsecurity-crs | grep "ok installed"; then apt 
 
 
 # backup pihole with rclone
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 curl https://rclone.org/install.sh | sudo bash
 curl https://raw.githubusercontent.com/henosch/rclone-backup/master/install.sh | sudo bash
