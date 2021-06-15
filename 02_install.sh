@@ -870,6 +870,13 @@ echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 apt install grafana -y
 
+if [ -z "$skip" ]
+	then
+cp /mnt/nas/---install---/grafana.db /var/lib/grafana/
+grafana-cli admin reset-admin-password admin
+	exit
+fi
+
 service grafana-server start
 /bin/systemctl daemon-reload
 /bin/systemctl enable grafana-server
