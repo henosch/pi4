@@ -32,7 +32,7 @@ ddns2=dyndns2
 ddns3=dyndns3
 ddns4=dyndns4
 ddns5=dyndns5
-local_net=192.168.178 (your localnet) 
+local_net=192.168.178 only 3 blocks (your localnet) 
 nas_pw=my nas password
 ssl_email=letsencrypt email
 gb=remote server ssh
@@ -45,6 +45,9 @@ fritz_coll=collect password (fritz.box)
 smb_pw=your samba user password
 # adminer language (default english)
 adminer=latest.php
+pi_hole_pw=your pihole password
+IPV6_ADDRESS=your server ipv6 ip
+IPV4_ADDRESS=your server ipv4 ip
 EOF
 ```
 # Script owner custom vars (you must set it) 
