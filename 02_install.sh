@@ -7,6 +7,14 @@ if [ $EUID -ne 0 ]; then
   exit 2
 fi
 
+# custom private vars
+# used in this script: 
+#
+# suname=username
+
+
+. /root/custom_vars
+
 # error fix: udisksd[433]: failed to load module mdraid: libbd_mdraid.so.2
 # apt install libblockdev-mdraid2 -y
 
@@ -260,15 +268,15 @@ chmod 0755 /home/jail
 /usr/sbin/jk_cp -j /home/jail/ /usr/bin/id
 /usr/sbin/jk_cp -j /home/jail/ /usr/bin/strace
 /usr/sbin/jk_cp -j /home/jail/ /usr/bin/whois
-useradd -m julian
-# passwd julian
-/usr/sbin/jk_jailuser -j /home/jail -s /usr/sbin/jk_lsh -m julian
-/usr/sbin/jk_jailuser -m -j /home/jail julian
-#sed -i 's/julian/#julian/g' /home/jail/etc/passwd
+useradd -m $jail_user
+echo -e "$jail_pw\n$jail_pw" | passwd $jail_user
+/usr/sbin/jk_jailuser -j /home/jail -s /usr/sbin/jk_lsh -m $jail_user
+/usr/sbin/jk_jailuser -m -j /home/jail $jail_user
+#sed -i 's/$jail_user/#$jail_user/g' /home/jail/etc/passwd
 echo "root:x:0:0:root:/root:/bin/bash" > /home/jail/etc/passwd
-echo "julian:x:1002:1002:,,,:/home/julian:/bin/bash" >> /home/jail/etc/passwd
+echo "$jail_user:x:1002:1002:,,,:/home/$jail_user:/bin/bash" >> /home/jail/etc/passwd
 rm -rf /home/jail/etc/jailkit/ 
-cd /home/mike
+cd /home/$suname
 
 
 ##############
@@ -431,14 +439,14 @@ cat <<EOF > /etc/samba/smb.conf
    browseable = yes 
    create mask = 0600
    directory mask = 0700
-   valid users = mike
+   valid users = $suname
 
 [root]
     comment = root
     path = /
     guest ok = no
     browseable = yes
-    valid users = mike
+    valid users = $suname
     read only = yes
 EOF
 
@@ -455,7 +463,7 @@ chown unbound:unbound /var/lib/unbound/root.hints
 # update root.hints
 wget -O /usr/local/bin/autoupdatelocalroot https://raw.githubusercontent.com/henosch/pi4/main/autoupdatelocalroot
 chmod 755 /usr/local/bin/autoupdatelocalroot
-echo -e "$(crontab -l)\n20 4 * * 0    /usr/local/bin/autoupdatelocalroot" | crontab -u mike -
+echo -e "$(crontab -l)\n20 4 * * 0    /usr/local/bin/autoupdatelocalroot" | crontab -u $suname -
 wget -O /usr/local/bin/updateunboundconf https://raw.githubusercontent.com/henosch/pi4/main/updateunboundconf
 chmod 755 /usr/local/bin/updateunboundconf
 
@@ -693,7 +701,7 @@ dpkg --install /root/webmin_1.974_all.deb
 
 
 ##############
-# sellinabox #
+# shellinabox #
 ##############
 
 # shellinabox config file
