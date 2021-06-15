@@ -824,18 +824,16 @@ cd /home/$suname
 ##############
 
 # with kali = apt install influxdb-client influxdb
-
 # curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 # echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+# influx backup Syntax
+# influxd backup -portable -db influxdb /mnt/nas/---install---/fritz_influxdb/
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install influxdb -y
 service influxdb start
 /bin/systemctl daemon-reload
 /bin/systemctl enable influxdb
-
-# influx backup Syntax
-# influxd backup -portable -db influxdb /mnt/nas/---install---/fritz_influxdb/
 
 If ! [ -z "$skip" ]
 	then
