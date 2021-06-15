@@ -32,6 +32,7 @@ fi
 # fritz_coll=collect password (fritz.box) 
 # smb_pw=your samba user password
 
+# use your custom vars
 . /root/custom_vars
 
 # error fix: udisksd[433]: failed to load module mdraid: libbd_mdraid.so.2
