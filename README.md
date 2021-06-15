@@ -43,6 +43,8 @@ fritz_coll=collect password (fritz.box)
 smb_pw=your samba user password
 EOF
 ```
+# Script owner custom vars
++ The script owner custom vars are skipped with skip
 
 # install first 
 curl https://raw.githubusercontent.com/henosch/pi4/main/01_install.sh | sudo bash
