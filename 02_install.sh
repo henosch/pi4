@@ -1025,10 +1025,10 @@ wget -O /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
 chown unbound:unbound /var/lib/unbound/root.hints
 
 # update root.hints
-wget -O /usr/local/bin/autoupdatelocalroot https://raw.githubusercontent.com/henosch/pi4/main/autoupdatelocalroot
+wget -O /usr/local/bin/autoupdatelocalroot https://raw.githubusercontent.com/henosch/pi4/main/scripts/autoupdatelocalroot
 chmod 755 /usr/local/bin/autoupdatelocalroot
 echo -e "$(crontab -l)\n20 4 * * 0    /usr/local/bin/autoupdatelocalroot" | crontab -u $suname -
-wget -O /usr/local/bin/updateunboundconf https://raw.githubusercontent.com/henosch/pi4/main/updateunboundconf
+wget -O /usr/local/bin/updateunboundconf https://raw.githubusercontent.com/henosch/pi4/main/scripts/updateunboundconf
 chmod 755 /usr/local/bin/updateunboundconf
 
 cat <<EOF > /etc/unbound/unbound.conf.d/pi-hole.conf
@@ -1200,7 +1200,7 @@ echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # sqlite3 /etc/pihole/gravity.db ".schema"
 
 # statistic
-wget -O /etc/pihole/uniq_urls.sh https://raw.githubusercontent.com/henosch/pi4/main/uniq_urls.sh 
+wget -O /etc/pihole/uniq_urls.sh https://raw.githubusercontent.com/henosch/pi4/main/scripts/uniq_urls.sh 
 chmod +x /etc/pihole/uniq_urls.sh
 
 
