@@ -106,7 +106,7 @@ echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/
 curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 
-# fritzctl
+# fritzctl offline
 # wget -qO - https://api.bintray.com/users/bpicode/keys/gpg/public.key | apt-key add -
 # echo "deb https://dl.bintray.com/bpicode/fritzctl_deb buster main" | tee -a /etc/apt/sources.list
 
