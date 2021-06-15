@@ -204,7 +204,10 @@ sed -i 's/#hdmi_group.*/hdmi_group=2/g' /boot/config.txt
 #  Apache Sites  #
 ##################
 
-# enable cgi-bin
+#############
+# enable cgi-bin #
+#############
+
 cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
 <IfModule mod_alias.c>
 	<IfModule mod_cgi.c>
@@ -246,7 +249,10 @@ a2enmod cgid cgi
 a2enconf cgi-enabled.conf
 
 
-# Standard Website - $ddns1
+######################
+# Standard Website - $ddns1 #
+######################
+
 cat <<EOF >/etc/apache2/sites-available/$ddns1.conf
 <VirtualHost *:80>
   ServerName $ddns1
@@ -313,7 +319,10 @@ wget -O /var/www/html/adminer.php https://www.adminer.org/$adminer
 a2ensite $ddns1.conf
 
 
-# Pi Control site - $ddns3
+####################
+# Pi Control site - $ddns3  #
+####################
+
 cat <<EOF >/etc/apache2/sites-available/$ddns3_pic.conf
 <VirtualHost *:80>
   ServerName $ddns3 
@@ -365,7 +374,10 @@ EOF
 a2ensite $ddns3_pic.conf
 
 
-# apache site for rpimonitor - $ddns2
+############################
+# apache site for rpimonitor - $ddns2 #
+############################
+
 cat <<EOF >/etc/apache2/sites-available/$ddns2_rpi.conf
 <VirtualHost *:80>
   ServerName $ddns2
@@ -410,7 +422,10 @@ EOF
 a2ensite $ddns2_rpi.conf
 
 
-# nextcloud - $ddns4
+#################
+# nextcloud - $ddns4  #
+#################
+
 cat <<EOF >/etc/apache2/sites-available/$ddns4_nc.conf
 <VirtualHost *:80>
   ServerName $ddns4
@@ -467,7 +482,10 @@ EOF
 a2ensite $ddns4_nc.conf
 
 
-# pihole admin Site
+###############
+# pihole admin Site #
+###############
+
 cat <<EOF > /etc/apache2/sites-available/pi-admin.conf
 <Location /admin>
   Authtype Basic
@@ -500,7 +518,10 @@ EOF
 a2ensite pi-admin.conf
 
 
-# apache2 proxy config site (Shell in a Box)
+################################
+# apache2 proxy config site (Shell in a Box) #
+################################
+
 cat <<EOF > /etc/apache2/sites-available/shellinabox.conf
 ProxyRequests Off
  
@@ -535,7 +556,10 @@ EOF
 a2ensite shellinabox.conf
 
 
-# Webalizer Site
+#############
+# Webalizer Site #
+#############
+
 cat <<EOF > /etc/apache2/sites-available/apache_webalizer.conf
 <VirtualHost *:80>
   ServerName $ddns5
@@ -1544,10 +1568,15 @@ echo -e "$(crontab -l)\n0 0 * * *    webalizer -c /etc/webalizer/access_$ddns3_p
 echo -e "$(crontab -l)\n0 0 * * *    webalizer -c /etc/webalizer/access_$ddns4_nextcloud.conf" | crontab -u root -
 echo -e "$(crontab -l)\n0 0 * * *    webalizer -c /etc/webalizer/access_$ddns5.conf" | crontab -u root -
 echo -e "$(crontab -l)\n0 1 2 * *    /usr/bin/certbot renew >>/var/log/letsencrypt/letsencrypt.log && service apache2 reload" | crontab -u root -
+
+if [ -z "$skip" ]
+	then
 echo -e "$(crontab -l)\n0 7 * * 1    influxd backup -portable -db influxdb /mnt/nas/---install---/fritz_influxdb/" | crontab -u root -
 echo -e "$(crontab -l)\n0 7 * * 2    sqlite3 /etc/pihole/pihole-FTL.db '.backup /mnt/nas/---install---/pihole-FTL.db.backup'" | crontab -u root -
+	exit
+fi
 
-
+	
 #################
 # fritzcollectd #
 #################
