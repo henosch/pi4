@@ -14,8 +14,6 @@ fi
 # jail_user=jail user
 # jail_pw=jail password
 
-
-
 . /root/custom_vars
 
 # error fix: udisksd[433]: failed to load module mdraid: libbd_mdraid.so.2
