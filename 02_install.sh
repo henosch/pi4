@@ -204,9 +204,9 @@ sed -i 's/#hdmi_group.*/hdmi_group=2/g' /boot/config.txt
 #  Apache Sites  #
 ##################
 
-#############
+##################
 # enable cgi-bin #
-#############
+##################
 
 cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
 <IfModule mod_alias.c>
@@ -249,9 +249,9 @@ a2enmod cgid cgi
 a2enconf cgi-enabled.conf
 
 
-######################
+#############################
 # Standard Website - $ddns1 #
-######################
+#############################
 
 cat <<EOF >/etc/apache2/sites-available/$ddns1.conf
 <VirtualHost *:80>
@@ -319,9 +319,9 @@ wget -O /var/www/html/adminer.php https://www.adminer.org/$adminer
 a2ensite $ddns1.conf
 
 
-####################
+#############################
 # Pi Control site - $ddns3  #
-####################
+#############################
 
 cat <<EOF >/etc/apache2/sites-available/$ddns3_pic.conf
 <VirtualHost *:80>
@@ -374,9 +374,9 @@ EOF
 a2ensite $ddns3_pic.conf
 
 
-############################
+#######################################
 # apache site for rpimonitor - $ddns2 #
-############################
+#######################################
 
 cat <<EOF >/etc/apache2/sites-available/$ddns2_rpi.conf
 <VirtualHost *:80>
@@ -422,9 +422,9 @@ EOF
 a2ensite $ddns2_rpi.conf
 
 
-#################
-# nextcloud - $ddns4  #
-#################
+######################
+# nextcloud - $ddns4 #
+######################
 
 cat <<EOF >/etc/apache2/sites-available/$ddns4_nc.conf
 <VirtualHost *:80>
@@ -482,9 +482,9 @@ EOF
 a2ensite $ddns4_nc.conf
 
 
-###############
+#####################
 # pihole admin Site #
-###############
+#####################
 
 cat <<EOF > /etc/apache2/sites-available/pi-admin.conf
 <Location /admin>
@@ -518,9 +518,9 @@ EOF
 a2ensite pi-admin.conf
 
 
-################################
+##############################################
 # apache2 proxy config site (Shell in a Box) #
-################################
+##############################################
 
 cat <<EOF > /etc/apache2/sites-available/shellinabox.conf
 ProxyRequests Off
@@ -556,9 +556,9 @@ EOF
 a2ensite shellinabox.conf
 
 
-#############
+##################
 # Webalizer Site #
-#############
+##################
 
 cat <<EOF > /etc/apache2/sites-available/apache_webalizer.conf
 <VirtualHost *:80>
