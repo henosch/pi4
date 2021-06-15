@@ -32,7 +32,6 @@ ddns2=dyndns2
 ddns3=dyndns3
 ddns4=dyndns4
 ddns5=dyndns5
-ddns_srv=dyndns update server
 local_net=192.168.178 (your localnet) 
 nas_pw=my nas password
 ssl_email=letsencrypt email
