@@ -20,6 +20,7 @@ ssk=cat id_rsa.pub (write here your sshkey)
 timez=your timezone
 ss="your WLAN ID"
 ssp=WLAN password
+wcountry=WLAN Country e.g DE
 jail_user=jail user
 jail_pw=jail password
 appw=htaccess user 
