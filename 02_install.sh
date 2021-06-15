@@ -171,6 +171,355 @@ a2enmod cgid cgi
 a2enconf cgi-enabled.conf
 
 
+# Standard Website - $ddns1
+cat <<EOF >/etc/apache2/sites-available/$ddns1.conf
+<VirtualHost *:80>
+  ServerName $ddns1
+  ServerAdmin webmaster@localhost
+    
+  DocumentRoot /var/www/html
+
+  ProxyPassMatch "^/(.*\\.php(/.*)?)\$" "unix:/var/run/php/php7.3-fpm.sock|fcgi://localhost/var/www/html"
+  
+  LogLevel warn
+  ErrorLog \${APACHE_LOG_DIR}/error_$ddns1.log
+  CustomLog \${APACHE_LOG_DIR}/access_$ddns1.log combined
+
+<Directory />
+  Options -Indexes +FollowSymLinks +MultiViews
+  AllowOverride All
+  Require all granted
+</Directory>
+
+<Location /adminer.php>
+  Authtype Basic
+  Authname "Password Required"
+  AuthUserFile /etc/apache2/.htpasswd
+  Require user $appw
+  Require ip $local_net.
+  Require forward-dns $ddns1
+  SecRuleEngine Off
+</Location>
+
+<Location /php_test.php>
+  Authtype Basic
+  Authname "Password Required"
+  AuthUserFile /etc/apache2/.htpasswd
+  Require user $appw
+  Require ip $local_net.
+  Require forward-dns $ddns1
+  SecRuleEngine Off
+</Location>
+
+<IfModule security2_module>
+	SecRuleEngine On
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</IfModule>
+
+#<FilesMatch \\.php$>
+  # Apache 2.4.10+ can proxy to unix socket
+  # SetHandler "proxy:unix:/var/run/php/php5.6-fpm.sock|fcgi://localhost/"
+#</FilesMatch>
+
+Header unset X-Powered-By
+Header always set Content-Security-Policy "default-src https: data: 'self' 'unsafe-inline' 'unsafe-eval'; form-action https: 'self'; referrer origin;"
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options sameorigin
+Header always set X-XSS-Protection "1; mode=block"
+
+</VirtualHost>
+EOF
+wget -O /var/www/html/adminer.php https://www.adminer.org/latest-de.php
+a2ensite $ddns1.conf
+
+
+# Pi Control site - $ddns3
+cat <<EOF >/etc/apache2/sites-available/$ddns3_pic.conf
+<VirtualHost *:80>
+  ServerName $ddns3 
+  ServerAdmin webmaster@localhost
+    
+  DocumentRoot /var/www/html/pic
+
+  ProxyPassMatch "^/(.*\\.php(/.*)?)\$" "unix:/var/run/php/php7.0-fpm.sock|fcgi://localhost/var/www/html/pic"
+   
+  LogLevel warn 
+  ErrorLog \${APACHE_LOG_DIR}/error_$ddns3_pic.log
+  CustomLog \${APACHE_LOG_DIR}/access_$ddns3_pic.log combined
+
+<Directory "/var/www/html/pic">
+  DirectoryIndex status.html index.php index.html index.htm
+  Options -Indexes +FollowSymLinks +MultiViews
+  Authtype Basic
+  Authname "Password Required"
+  AuthUserFile /etc/apache2/.htpasswd
+  Require user $appw
+  Require ip $local_net.
+  Require forward-dns $ddns1
+</Directory>
+
+<IfModule security2_module>
+	SecRuleEngine On
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</IfModule>
+    
+#<FilesMatch \\.php$>
+  # Apache 2.4.10+ can proxy to unix socket
+  # SetHandler "proxy:unix:/var/run/php/php5.6-fpm.sock|fcgi://localhost/"
+#</FilesMatch>
+
+Header unset X-Powered-By
+Header always set Content-Security-Policy "default-src https: data: 'self' 'unsafe-inline' 'unsafe-eval'; form-action https: 'self'; referrer origin;"
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options sameorigin
+Header always set X-XSS-Protection "1; mode=block"
+
+</VirtualHost>
+EOF
+# enable Pi Control site
+a2ensite $ddns3_pic.conf
+
+
+# apache site for rpimonitor - $ddns2
+cat <<EOF >/etc/apache2/sites-available/$ddns2_rpi.conf
+<VirtualHost *:80>
+  ServerName $ddns2
+  ServerAdmin webmaster@localhost
+  DocumentRoot "/usr/share/rpimonitor/web"
+
+  LogLevel warn
+  ErrorLog \${APACHE_LOG_DIR}/error_$ddns2_rpi.log
+  CustomLog \${APACHE_LOG_DIR}/access_$ddns2_rpi.log combined
+  #Alias /rpim/ "/usr/share/rpimonitor/web"
+
+<Directory "/usr/share/rpimonitor/web">
+  DirectoryIndex status.html index.php index.html index.htm
+  Options -Indexes +FollowSymLinks +MultiViews
+  Authtype Basic
+  Authname "Password Required"
+  AuthUserFile /etc/apache2/.htpasswd
+  Require user $appw
+  Require ip $local_net.
+  Require forward-dns $ddns1
+</Directory>
+
+<IfModule security2_module>
+	SecRuleEngine On
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</IfModule>
+  
+</VirtualHost>
+
+Header unset X-Powered-By
+Header always set Content-Security-Policy "default-src https: data: 'self' 'unsafe-inline' 'unsafe-eval'; form-action https: 'self'; referrer origin;"
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options sameorigin
+Header always set X-XSS-Protection "1; mode=block"
+EOF
+# enable site for rpimonitor
+a2ensite $ddns2_rpi.conf
+
+
+# nextcloud - $ddns4
+cat <<EOF >/etc/apache2/sites-available/$ddns4_nc.conf
+<VirtualHost *:80>
+  ServerName $ddns4
+  ServerAdmin webmaster@localhost
+
+  DocumentRoot /var/www/nextcloud
+
+# ProxyErrorOverride on
+# ProxyPassMatch "^/(.*\\.php(/.*)?)\$" "unix:/var/run/php/php7.3-fpm.sock|fcgi://localhost/var/www/nextcloud"
+
+# <If "-f %{SCRIPT_FILENAME}">
+# SetHandler "proxy:unix:/run/php/php7.3-fpm.nextcloud.sock|fcgi://localhost"
+# </If>
+
+  LogLevel warn
+  ErrorLog \${APACHE_LOG_DIR}/error_$ddns4_nextcloud.log
+  CustomLog \${APACHE_LOG_DIR}/access_$ddns4_nextcloud.log combined
+
+<Directory /var/www/nextcloud>
+  Options -Indexes +FollowSymLinks
+  AllowOverride All
+  Require all granted
+
+  SetEnv HOME /var/www/nextcloud
+  SetEnv HTTP_HOME /var/www/nextcloud
+
+  Redirect 301 /.well-known/carddav /remote.php/dav
+  Redirect 301 /.well-known/caldav /remote.php/dav
+
+<IfModule mod_security2.c>
+  SecRuleEngine Off
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</IfModule>
+
+</Directory>
+
+<FilesMatch \\.php$>
+  SetHandler "proxy:unix:/var/run/php/php7.3-fpm.nextcloud.sock|fcgi://localhost"
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=15552000; inextcloudludeSubDomains"
+  Header always set Referrer-Policy "no-referrer"
+</IfModule>
+
+</VirtualHost>
+EOF
+# enable $ddns4 site
+a2ensite $ddns4_nc.conf
+
+
+# pihole admin Site
+cat <<EOF > /etc/apache2/sites-available/pi-admin.conf
+<Location /admin>
+  Authtype Basic
+  Authname "Password Required"
+  AuthUserFile /etc/apache2/.htpasswd
+  #Require valid-user
+  Require user $appw
+  Require ip $local_net.
+  Require forward-dns $ddns1
+</Location>
+
+<IfModule security2_module>
+	SecRuleEngine On
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</IfModule>
+ 
+Header unset X-Powered-By
+Header always set Content-Security-Policy "default-src https: data: 'self' 'unsafe-inline' 'unsafe-eval'; form-action https: 'self'; referrer origin;"
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options sameorigin
+Header always set X-XSS-Protection "1; mode=block"
+
+EOF
+# enable pihole admin Site
+a2ensite pi-admin.conf
+
+
+# apache2 proxy config site (Shell in a Box)
+cat <<EOF > /etc/apache2/sites-available/shellinabox.conf
+ProxyRequests Off
+ 
+<Proxy *>
+  AddDefaultCharset off
+  Require all granted
+</Proxy>
+ 
+<Location /shell>
+  ProxyPass http://localhost:8700/
+  Authtype Basic
+  Authname "Password Required"
+  AuthUserFile /etc/apache2/.htpasswd
+  Require user $appw
+  Require ip $local_net.
+  Require forward-dns $ddns1
+</Location>
+
+<IfModule security2_module>
+	SecRuleEngine Off
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</IfModule>
+
+# Redirect permanent /shell https://$ddns1/shell
+EOF
+# enable apache proxy site (Shell in a Box)
+a2ensite shellinabox.conf
+
+
+# Webalizer Site
+cat <<EOF > /etc/apache2/sites-available/apache_webalizer.conf
+<VirtualHost *:80>
+  ServerName $ddns5
+  ServerAdmin webmaster@localhost
+  
+  LogLevel warn
+  ErrorLog \${APACHE_LOG_DIR}/error_$ddns5.log
+  CustomLog \${APACHE_LOG_DIR}/access_$ddns5.log combined
+
+  DocumentRoot /var/www/webalizer
+
+<Directory /var/www/webalizer>
+  Options +Indexes
+  Authtype Basic
+  Authname "Password Required"
+  AuthUserFile /etc/apache2/.htpasswd
+  #Require valid-user
+  Require user $appw
+  Require ip $local_net.
+  Require forward-dns $ddns5
+</Directory>
+
+<IfModule security2_module>
+	SecRuleEngine On
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</IfModule>
+
+</VirtualHost>
+
+Header unset X-Powered-By
+Header always set Content-Security-Policy "default-src https: data: 'self' 'unsafe-inline' 'unsafe-eval'; form-action https: 'self'; referrer origin;"
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options sameorigin
+Header always set X-XSS-Protection "1; mode=block"
+
+EOF
+# enable Webalizer Site
+a2ensite apache_webalizer.conf
+
+# Webalizer Config
+mkdir /var/www/webalizer/$ddns1
+mkdir /var/www/webalizer/$ddns2
+mkdir /var/www/webalizer/$ddns3
+mkdir /var/www/webalizer/$ddns4
+mkdir /var/www/webalizer/$ddns5
+mkdir /var/www/webalizer/standard
+chown -R www-data:www-data /var/www/webalizer
+chmod 750 /var/www/webalizer/
+
+cp -r /mnt/nas/etc/webalizer/* /etc/webalizer/
+
+chown www-data:www-data /var/log/apache2/*
+
+
 ###################
 # Apache security #
 ###################
