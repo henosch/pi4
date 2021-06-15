@@ -16,6 +16,7 @@ fi
 # ss="WLAN ID"
 # ssp=WLAN password
 
+# use your custom vars
 . /root/custom_vars
 
 ####################
