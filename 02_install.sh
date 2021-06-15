@@ -31,6 +31,9 @@ fi
 # fritz_pw=fritz.box login password
 # fritz_coll=collect password (fritz.box) 
 # smb_pw=your samba user password
+# pi_hole_pw=your pihole password
+# IPV6_ADDRESS=your server ipv6 ip
+# IPV4_ADDRESS=your server ipv4 ip
 
 # use your custom vars
 . /root/custom_vars
@@ -1123,11 +1126,11 @@ mkdir /etc/pihole
 
 # setupVars.conf
 cat <<EOF > /etc/pihole/setupVars.conf
-WEBPASSWORD=ecdca4c1892c120b16105c4c99e1d80c9363cd23b209d830c4660777552a51e6
+WEBPASSWORD=$pi_hole_pw
 DNSMASQ_LISTENING=local
 PIHOLE_INTERFACE=eth0
-IPV4_ADDRESS=192.168.11.29/24
-IPV6_ADDRESS=2001:a61:115a:4c01:b018:a0ef:1872:6f3f
+IPV4_ADDRESS=$IPV4_ADDRESS/24
+IPV6_ADDRESS=$IPV6_ADDRESS
 PIHOLE_DNS_1=127.0.0.1#5335
 PIHOLE_DNS_2=127.0.0.1#5335
 QUERY_LOGGING=true
