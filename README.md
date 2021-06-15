@@ -13,6 +13,7 @@
 + sudo -i
 
 # Set your own data with vars
+```bash
 cat <<EOF > /root/custom_vars
 suname=your user
 ssk=cat id_rsa.pub (write here your sshkey) 
@@ -39,6 +40,7 @@ database=nextcloud (database name)
 fritz_pw=fritz.box login password
 fritz_coll=collect password (fritz.box) 
 EOF
+```
 
 # install first 
 curl https://raw.githubusercontent.com/henosch/pi4/main/01_install.sh | sudo bash
