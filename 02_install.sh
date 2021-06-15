@@ -1484,7 +1484,7 @@ mysql -u root -p$root_pw -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIE
 # remote access mysql
 if [ -z "$skip" ]
 	then
-sed -i 's/127.0.0.1/$IPV4_ADDRESS/g' /etc/mysql/mariadb.conf.d/50-server.cnf
+# sed -i 's/127.0.0.1/$IPV4_ADDRESS/g' /etc/mysql/mariadb.conf.d/50-server.cnf
 	exit
 fi
 
