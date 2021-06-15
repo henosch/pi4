@@ -7,12 +7,23 @@ if [ $EUID -ne 0 ]; then
   exit 2
 fi
 
+# custom private vars
+# used in this script: 
+#
+# suname=username
+# ssk=cat id_rsa.pub and write here
+# timez=your timezone
+# ss="WLAN ID"
+# ssp=WLAN password
+
+. /root/custom_vars
+
 ####################
 # sudoers settings #
 ####################
 
 sed -i 's/NOPASSWD/PASSWD/g' /etc/sudoers.d/010_pi-nopasswd
-echo "mike ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
+echo "$suname ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_pi-nopasswd
 deluser pi sudo
 
 
@@ -20,16 +31,16 @@ deluser pi sudo
 # sshd settings #
 #################
 
-mkdir -p /home/mike/.ssh && chmod 700 .ssh
-cat <<EOF >/home/mike/.ssh/authorized_keys
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgzf3yRLgztIX0GL5uJYSmsudJdgeGK4tXdt94g+quW mike@localhost
+mkdir -p /home/$suname/.ssh && chmod 700 .ssh
+cat <<EOF >/home/$suname/.ssh/authorized_keys
+$ssk
 EOF
 chmod 600 .ssh/authorized_keys
-chown mike:mike -R /home/mike/.ssh
+chown $suname:$suname -R /home/$suname/.ssh
 
 sed -i 's/#Port 22/Port 2022/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/g' /etc/ssh/sshd_config
-sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+# sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 60/g' /etc/ssh/sshd_config
 sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 240/g' /etc/ssh/sshd_config
 
@@ -38,7 +49,7 @@ sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 240/g' /etc/ssh/sshd_config
 # set timezone #
 ################
 
-timedatectl set-timezone Europe/Berlin
+timedatectl set-timezone $timez
 
 
 ###############
@@ -56,8 +67,8 @@ update_config=1
 country=DE
 
 network={
-        ssid="Tut Busse das Ende ist nah"
-        psk=dd3ccd7895815d3a38f8a336968e8c4b419f6e517e70a02298661cf443a8d253
+        ssid="$ss"
+        psk=$ssp
         key_mgmt=WPA-PSK
 }
 EOF
@@ -134,21 +145,21 @@ if dpkg-query -W -f='${Status}' modsecurity-crs | grep "ok installed"; then apt 
 git clone --depth=1 https://github.com/amix/vimrc.git /root/.vim_runtime
 cp /root/.vim_runtime/vimrcs/basic.vim /root/.vimrc
 
-# install awesome vim for mike
-git clone --depth=1 https://github.com/amix/vimrc.git /home/mike/.vim_runtime
-cp /home/mike/.vim_runtime/vimrcs/basic.vim /home/mike/.vimrc
+# install awesome vim for $suname
+git clone --depth=1 https://github.com/amix/vimrc.git /home/$suname/.vim_runtime
+cp /home/$suname/.vim_runtime/vimrcs/basic.vim /home/$suname/.vimrc
  
 ##########
 # vi fix #
 ##########
 
-cat <<EOF >> /home/mike/.vimrc
+cat <<EOF >> /home/$suname/.vimrc
 :set timeout ttimeoutlen=100 timeoutlen=5000
 :set term=builtin_ansi
 :set nocompatible
 EOF
 sed -i "s/backspace=.*/backspace=2/g" /root/.vimrc
-chown mike:mike -R /home/mike
+chown $suname:$suname -R /home/$suname
 # syntax on
 
 cat <<EOF >> /root/.vimrc
@@ -156,7 +167,7 @@ cat <<EOF >> /root/.vimrc
 :set term=builtin_ansi
 :set nocompatible
 EOF
-sed -i "s/backspace=.*/backspace=2/g" /home/mike/.vimrc
+sed -i "s/backspace=.*/backspace=2/g" /home/$suname/.vimrc
 # syntax on
 
 
