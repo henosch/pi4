@@ -65,7 +65,7 @@ EOF
 cat <<EOF >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
-country=DE
+country=$wcountry
 
 network={
         ssid="$ss"
