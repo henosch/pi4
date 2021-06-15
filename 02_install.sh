@@ -13,6 +13,23 @@ fi
 # suname=username
 # jail_user=jail user
 # jail_pw=jail password
+# appw=htaccess user 
+# ddns1=dyndns1
+# ddns2=dyndns2
+# ddns3=dyndns3
+# ddns4=dyndns4
+# ddns5=dyndns5
+# ddns_srv=dyndns update server
+# local_net=192.168.178 (your localnet) 
+# nas_pw=my nas password
+# ssl_email=letsencrypt email
+# gb=remote server ssh
+# root_pw=mysql root password
+# sql_user=mysql user
+# sql_user_pw=mysql user password
+# database=nextcloud (database name) 
+# fritz_pw=fritz.box login password
+# fritz_coll=collect password (fritz.box) 
 
 . /root/custom_vars
 
