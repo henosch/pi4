@@ -183,7 +183,8 @@ DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 sed -i 's/exec "\$SHELL"/exec "\$SHELL" \-\-login/g'  /usr/bin/byobu-shell
 sed -i 's/exec \/bin\/sh/exec \/bin\/bash \-\-login/g'  /usr/bin/byobu-shell
 echo "set -g status off" >>/home/$suname/.byobu/.tmux.conf
+
 # start 
-byobu-enable
+sudo -u $suname /usr/bin/byobu-enable
 
 reboot
