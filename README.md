@@ -15,6 +15,9 @@
 # Set your own data with vars
 ```bash
 cat <<EOF > /root/custom_vars
+# you must set skip=owner_vars
+skip=owner_vars
+#
 suname=your user
 ssk=cat id_rsa.pub (write here your sshkey) 
 timez=your timezone
@@ -43,8 +46,8 @@ fritz_coll=collect password (fritz.box)
 smb_pw=your samba user password
 EOF
 ```
-# Script owner custom vars
-+ The script owner custom vars are skipped with skip
+# Script owner custom vars (you must set it) 
++ The script owner custom vars are skipped with skip=owner_vars
 
 # install first 
 curl https://raw.githubusercontent.com/henosch/pi4/main/01_install.sh | sudo bash
