@@ -61,30 +61,35 @@ dpkg-reconfigure -f noninteractive locales
 #  Install any php Version  #
 #############################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # php 5.6
 apt install php5.6-fpm php5.6-gd php5.6-mysql php5.6-curl php5.6-xml \
   php5.6-zip php5.6-intl libapache2-mod-php5.6 php5.6-mbstring php5.6-json \
   php5.6-bz2 php5.6 php5.6-cli php5.6-common php5.6-ssh2 php5.6-mcrypt php5.6-sqlite3 \
   php5.6-bcmath php5.6-gmp -y
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # php 7.0  
 apt install php7.0-fpm php7.0-gd php7.0-mysql php7.0-curl php7.0-xml \
   php7.0-zip php7.0-intl libapache2-mod-php7.0 php7.0-mbstring php7.0-json \
   php7.0-bz2 php7.0 php7.0-cli php7.0-common php7.0-ssh2 php7.0-mcrypt php7.0-sqlite3 \
   php7.0-bcmath php7.0-gmp -y
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # php 7.3
 apt install php7.3-fpm php7.3-gd php7.3-mysql php7.3-curl php7.3-xml \
   php7.3-zip php7.3-intl libapache2-mod-php7.3 php7.3-mbstring php7.3-json \
   php7.3-bz2 php7.3 php7.3-cli php7.3-common php7.3-ssh2 php7.3-sqlite3 \
   php7.3-bcmath php7.3-gmp -y
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # php 7.4
 apt install php7.4-fpm php7.4-gd php7.4-mysql php7.4-curl php7.4-xml \
   php7.4-zip php7.4-intl libapache2-mod-php7.4 php7.4-mbstring php7.4-json \
   php7.4-bz2 php7.4 php7.4-cli php7.4-common php7.4-sqlite3 php7.4-bcmath php7.4-gmp -y
   
- # php 8.0
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
+# php 8.0
  apt install php8.0-fpm php8.0-gd php8.0-mysql php8.0-curl php8.0-xml \
   php8.0-zip php8.0-intl libapache2-mod-php8.0 php8.0-mbstring \
   php8.0-bz2 php8.0 php8.0-cli php8.0-common php8.0-ssh2 php8.0-mcrypt php8.0-sqlite3 \
@@ -106,6 +111,7 @@ php -i | grep "Loaded Configuration File"
 # Install Xserver on rasp Image lite  #
 #######################################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install --no-install-recommends xserver-xorg \
   raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone -y
 
@@ -124,6 +130,7 @@ chown lightdm:lightdm /var/lib/lightdm/data
 # xrdp - Microsoft Remote Desktop  #
 ####################################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install xrdp -y
 service xrdp start
 update-rc.d xrdp enable
@@ -133,6 +140,7 @@ update-rc.d xrdp enable
 #  Install VNC Server #
 #######################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install acl bc colord colord-data cups cups-browsed cups-client cups-common \
   cups-core-drivers cups-daemon cups-filters cups-filters-core-drivers \
   cups-ipp-utils cups-ppdc cups-server-common libcolorhug2 libfontembed1 libgusb2 \
@@ -561,6 +569,7 @@ chown www-data:www-data /var/log/apache2/*
 # Apache security #
 ###################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # modsecurity config
 git clone https://github.com/coreruleset/coreruleset /etc/apache2/owasp-modsecurity-crs
 cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf 
@@ -675,6 +684,7 @@ password='plyc-plsb-bzwb'
 $ddns5
 EOF
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install ddclient -y
 # sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install ddclient
 # mv /etc/default/ddclient /etc/default/ddclient_org
@@ -727,6 +737,7 @@ ALLOWED_IPS="0.0.0.0/0, ::0/0"
 UNATTUPG=1
 EOF
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # debconf-get-selections | grep iptables-persistent
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
@@ -739,6 +750,7 @@ curl -L https://raw.githubusercontent.com/pivpn/pivpn/master/auto_install/instal
 # jail chroot #
 ###############
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install build-essential autoconf automake libtool flex bison debhelper binutils -y
 wget -O /root/jailkit-2.22.tar.gz https://olivier.sessink.nl/jailkit/jailkit-2.22.tar.gz
 cd /root/
@@ -779,6 +791,7 @@ cd /home/$suname
 # curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 # echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install influxdb -y
 service influxdb start
 /bin/systemctl daemon-reload
@@ -803,6 +816,7 @@ EOF
 #  grafana  #
 #############
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 # echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
 # wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
 
@@ -909,6 +923,7 @@ touch /var/www/nextcloud/data/nextcloud.log
 # samba unattend #
 ##################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 echo "samba-common samba-common/workgroup string  WORKGROUP" | sudo debconf-set-selections
 echo "samba-common samba-common/dhcp boolean true" | sudo debconf-set-selections
 echo "samba-common samba-common/do_debconf boolean true" | sudo debconf-set-selections
@@ -947,6 +962,7 @@ EOF
 #   install unbound  #
 ######################
 
+echo "nameserver 159.69.114.157" > /etc/resolv.conf
 apt install unbound -y
 wget -O /var/lib/unbound/root.hints https://www.internic.net/domain/named.root
 chown unbound:unbound /var/lib/unbound/root.hints
