@@ -175,13 +175,15 @@ sed -i "s/backspace=.*/backspace=2/g" /home/$suname/.vimrc
 # config wajig
 ln -s /usr/bin/wajig /usr/bin/apt2
 
+# link sh to bash
+echo "dash dash/sh boolean false" | debconf-set-selections
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
 # config byobu
 sed -i 's/exec "\$SHELL"/exec "\$SHELL" \-\-login/g'  /usr/bin/byobu-shell
 sed -i 's/exec \/bin\/sh/exec \/bin\/bash \-\-login/g'  /usr/bin/byobu-shell
-
-# link sh to bash
-echo "dash dash/sh boolean false" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+echo "set -g status off" >>/home/$suname/.byobu/.tmux.conf
+# start 
+byobu-enable
 
 reboot
