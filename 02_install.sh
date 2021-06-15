@@ -973,6 +973,8 @@ cat <<EOF > /etc/samba/smb.conf
     read only = yes
 EOF
 
+# samba password
+echo -e "$smb_pw\n$smb_pw" | smbpasswd -a $suname
 
 
 ######################
