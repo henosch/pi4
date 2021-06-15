@@ -1253,7 +1253,6 @@ sed -i '12,42s/^#//' /etc/rpimonitor/template/network.conf
 # disable intern webserver
 sed -i 's/^#daemon.noserver\=1/daemon.noserver\=1/g' /etc/rpimonitor/daemon.conf
 
-
 # enable shellinbox
 # cat <<EOF >> /etc/rpimonitor/data.conf
 # web.addons.1.title=ShelleInABox
@@ -1262,7 +1261,6 @@ sed -i 's/^#daemon.noserver\=1/daemon.noserver\=1/g' /etc/rpimonitor/daemon.conf
 # web.addons.1.url=http://localhost:8700/
 # web.addons.1.allowupdate=false
 # EOF
-
 
 cat <<EOF > /etc/cron.d/rpimonitor
 # run at 03:05 to update local repository database
@@ -1309,6 +1307,10 @@ mv /etc/shellinabox/options-enabled/00+Black\ on\ White.css /etc/shellinabox/opt
  && mv /etc/shellinabox/options-enabled/00_White\ On\ Black.css /etc/shellinabox/options-enabled/00+White\ On\ Black.css
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
+
+# Newer kernel available
+# needrestart -k
+# remove needrestart, because kernel message pop up every time
 
 if dpkg-query -W -f='${Status}' needrestart | grep "ok installed"; then apt remove needrestart -y; fi
 
@@ -1364,10 +1366,10 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/f
 ##################
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
-wget -O fb-tools.deb 'http://www.mengelke.de'`wget -q -O- http://www.mengelke.de/Projekte/FritzBoxTools.html \
+wget -O /root/fb-tools.deb 'http://www.mengelke.de'`wget -q -O- http://www.mengelke.de/Projekte/FritzBoxTools.html \
 | grep -a -o -E '/Download;fb-tools.deb\\?[a-f0-9]+'`
 # dpkg -i /mnt/nas/---deb---/fb-tools.deb 
-dpkg -i fb-tools.deb
+dpkg -i /root/fb-tools.deb
 usermod -a -G staff $suname
 fb_tools info update
 fb_tools plugin install update
@@ -1454,7 +1456,7 @@ EOF
 
 if [ -z "$skip" ]
 	then
-sudo -u $suname cp -R /mnt/nas/home/$suname/swgoh_tracker . 
+sudo -u $suname cp -R /mnt/nas/home/$suname/swgoh_tracker /home/$suname/
 cd /home/$suname/swgoh_tracker
 sudo -u $suname sh update_all_docker.sh 24
 	exit
@@ -1482,7 +1484,7 @@ mysql -u root -p$root_pw -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIE
 # remote access mysql
 if [ -z "$skip" ]
 	then
-sed -i 's/127.0.0.1/$local_net.29/g' /etc/mysql/mariadb.conf.d/50-server.cnf
+sed -i 's/127.0.0.1/$IPV4_ADDRESS/g' /etc/mysql/mariadb.conf.d/50-server.cnf
 	exit
 fi
 
