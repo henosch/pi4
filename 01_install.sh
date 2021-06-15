@@ -91,7 +91,7 @@ systemctl start wpa_supplicant@wlan0.service
 # needed repo #
 ###############
 
-# The PI Server becomes a name server
+# The PI Server becomes a temp name server
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 
 # php
