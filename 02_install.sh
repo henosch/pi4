@@ -149,7 +149,7 @@ apt install --no-install-recommends xserver-xorg \
   raspberrypi-ui-mods xinit firefox-esr-l10n-de piclone -y
 
 # error fix: Error getting user list from org.freedesktop.Accounts: GDBus.Error
-apt install accountsservice
+apt install accountsservice -y
 
 # error fix
 mkdir /var/lib/lightdm/data
