@@ -1558,6 +1558,7 @@ cat <<EOF >> /etc/apache2/.htpasswd
 $appw:\$2y\$05\$3/FaWHXG2J.kc0BKDzoDcOEoiDDniH3NArwvpTWQS2isG9IjoGyL6
 EOF
 chmod 640 /etc/apache2/.htpasswd
+chown root:www-data /etc/apache2/.htpasswd
 
 echo "NTP=213.136.94.10 80.241.218.68 78.46.223.134" >> /etc/systemd/timesyncd.conf
 
