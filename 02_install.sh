@@ -239,7 +239,7 @@ cat <<EOF > /etc/apache2/conf-available/cgi-enabled.conf
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </IfModule>
 
@@ -301,7 +301,7 @@ cat <<EOF >/etc/apache2/sites-available/$ddns1.conf
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </IfModule>
 
@@ -356,7 +356,7 @@ cat <<EOF >/etc/apache2/sites-available/$ddns3_pic.conf
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </IfModule>
     
@@ -409,7 +409,7 @@ cat <<EOF >/etc/apache2/sites-available/$ddns2_rpi.conf
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </IfModule>
   
@@ -464,7 +464,7 @@ cat <<EOF >/etc/apache2/sites-available/$ddns4_nc.conf
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </IfModule>
 
@@ -506,7 +506,7 @@ cat <<EOF > /etc/apache2/sites-available/pi-admin.conf
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </IfModule>
  
@@ -549,7 +549,7 @@ ProxyRequests Off
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </IfModule>
 
@@ -591,7 +591,7 @@ cat <<EOF > /etc/apache2/sites-available/apache_webalizer.conf
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteCond %{SERVER_NAME} =%{SERVER_NAME}
+	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </IfModule>
 
@@ -646,8 +646,6 @@ mv /etc/apache2/owasp-modsecurity-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-C
 cat <<EOF >> /etc/apache2/apache2.conf
 <IfModule security2_module>
      SecRuleEngine On
-     IncludeOptional /etc/apache2/owasp-modsecurity-crs/crs-setup.conf
-     IncludeOptional /etc/apache2/owasp-modsecurity-crs/rules/*.conf
      ServerTokens OS
      SecServerSignature "Apache/2.2.16 (Unix)"
  </IfModule>
@@ -775,7 +773,7 @@ certbot --noninteractive --agree-tos  --no-redirect -m $ssl_email -d $ddns1,$ddn
 # Install WireGuard #
 #####################
 
-mkdir -p /etc/pivpn/wireguard/setupVars.conf 
+mkdir -p /etc/pivpn/wireguard/
 cat <<EOF >> /etc/pivpn/wireguard/setupVars.conf 
 PLAT=Raspbian
 OSCN=buster
@@ -1368,14 +1366,12 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/f
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
 wget -O /root/fb-tools.deb 'http://www.mengelke.de'`wget -q -O- http://www.mengelke.de/Projekte/FritzBoxTools.html \
 | grep -a -o -E '/Download;fb-tools.deb\\?[a-f0-9]+'`
-# dpkg -i /mnt/nas/---deb---/fb-tools.deb 
 dpkg -i /root/fb-tools.deb
 usermod -a -G staff $suname
 fb_tools info update
 fb_tools plugin install update
 
 mv /usr/local/share/fb_tools/fb_config.php /usr/local/share/fb_tools/fb_config.php_org
-# cp /mnt/nas/---install---/fb_config.php /usr/local/share/fb_tools/
 
 # fb_tools fritz.box logintest
 # fb_tools my logintest
@@ -1512,7 +1508,6 @@ sudo -i
 # fritzctl #
 ############
 
-# dpkg -i /mnt/nas/---deb---/fritzctl_1.4.23_armhf.deb
 wget -O /root/fritzctl_1.4.23_armhf.deb https://github.com/henosch/pi4/raw/main/apk/fritzctl_1.4.23_armhf.deb
 dpkg -i  /root/fritzctl_1.4.23_armhf.deb
 
@@ -1550,9 +1545,9 @@ cat <<EOF > /usr/local/share/fb_tools/fb_config.php
 EOF
 
 
-###################################################
-# PW is in 1pw Raspberry PI 4 Apache/.htaccess PW #
-###################################################
+######################################
+# Raspberry PI 4 Apache/.htaccess PW #
+######################################
 
 cat <<EOF >> /etc/apache2/.htpasswd
 $appw:\$2y\$05\$3/FaWHXG2J.kc0BKDzoDcOEoiDDniH3NArwvpTWQS2isG9IjoGyL6
