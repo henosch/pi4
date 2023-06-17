@@ -137,13 +137,6 @@ apt install apache2 mariadb-server zip unzip build-essential \
 if dpkg-query -W -f='${Status}' modsecurity-crs | grep "ok installed"; then apt remove modsecurity-crs -y; fi
 
 echo "nameserver 159.69.114.157" > /etc/resolv.conf
-# install awesome vim for root
-git clone --depth=1 https://github.com/amix/vimrc.git /root/.vim_runtime
-cp /root/.vim_runtime/vimrcs/basic.vim /root/.vimrc
-
-# install awesome vim for $suname
-git clone --depth=1 https://github.com/amix/vimrc.git /home/$suname/.vim_runtime
-cp /home/$suname/.vim_runtime/vimrcs/basic.vim /home/$suname/.vimrc
  
 ##########
 # vi fix #
