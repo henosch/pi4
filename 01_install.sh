@@ -148,6 +148,11 @@ set encoding=utf-8
 set backspace=2
 colorscheme desert
 syntax on
+cnoremap <C-A> <Home>
+cnoremap <C-E> <End> 
+cnoremap <C-K> <C-U>
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
 EOF
 
 chown $suname:$suname -R /home/$suname
@@ -158,6 +163,11 @@ set encoding=utf-8
 set backspace=2
 colorscheme desert
 syntax on
+cnoremap <C-A> <Home>
+cnoremap <C-E> <End> 
+cnoremap <C-K> <C-U>
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
 EOF
 
 
