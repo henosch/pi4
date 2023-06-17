@@ -153,7 +153,7 @@ EOF
 chown $suname:$suname -R /home/$suname
 
 cat <<EOF >> /root/.vimrc
-:set nocompatible
+set nocompatible
 set encoding=utf-8
 set backspace=2
 colorscheme desert
