@@ -146,6 +146,7 @@ cat <<EOF >> /home/$suname/.vimrc
 set nocompatible
 set encoding=utf-8
 set backspace=2
+colorscheme desert
 syntax on
 EOF
 
@@ -155,6 +156,7 @@ cat <<EOF >> /root/.vimrc
 :set nocompatible
 set encoding=utf-8
 set backspace=2
+colorscheme desert
 syntax on
 EOF
 
