@@ -150,21 +150,20 @@ cp /home/$suname/.vim_runtime/vimrcs/basic.vim /home/$suname/.vimrc
 ##########
 
 cat <<EOF >> /home/$suname/.vimrc
-:set timeout ttimeoutlen=100 timeoutlen=5000
-:set term=builtin_ansi
-:set nocompatible
+set nocompatible
+set encoding=utf-8
+set backspace=2
+syntax on
 EOF
-sed -i "s/backspace=.*/backspace=2/g" /root/.vimrc
+
 chown $suname:$suname -R /home/$suname
-# syntax on
 
 cat <<EOF >> /root/.vimrc
-:set timeout ttimeoutlen=100 timeoutlen=5000
-:set term=builtin_ansi
 :set nocompatible
+set encoding=utf-8
+set backspace=2
+syntax on
 EOF
-sed -i "s/backspace=.*/backspace=2/g" /home/$suname/.vimrc
-# syntax on
 
 
 # config wajig
