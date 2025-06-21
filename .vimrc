@@ -37,10 +37,48 @@ set showmatch
 " Do not let cursor scroll below or above N number of lines when scrolling.
 set scrolloff=10
 
-colorscheme desert
-
 " Turn syntax highlighting on.
+set background=dark
 syntax on
+
+" Minimalversion von colorscheme desert für Terminal (cterm-only)
+hi clear
+if exists("syntax_on")
+  syntax reset
+endif
+let g:colors_name = "desert"
+
+hi Normal       ctermfg=white    ctermbg=black
+hi Cursor       ctermfg=black    ctermbg=yellow
+hi VertSplit    ctermfg=darkgrey ctermbg=darkgrey cterm=none
+hi Folded       ctermfg=yellow   ctermbg=darkgrey
+hi FoldColumn   ctermfg=yellow   ctermbg=darkgrey
+hi IncSearch    ctermfg=black    ctermbg=yellow
+hi LineNr       ctermfg=yellow   ctermbg=darkgrey
+hi ModeMsg      ctermfg=yellow
+hi MoreMsg      ctermfg=green
+hi NonText      ctermfg=lightblue ctermbg=darkgrey
+hi Question     ctermfg=green
+hi Search       ctermfg=black    ctermbg=brown
+hi SpecialKey   ctermfg=green
+hi StatusLine   ctermfg=black    ctermbg=lightgrey cterm=none
+hi StatusLineNC ctermfg=grey     ctermbg=lightgrey cterm=none
+hi Title        ctermfg=red
+hi Visual       ctermfg=yellow   ctermbg=green
+hi WarningMsg   ctermfg=red
+hi WildMenu     ctermfg=black    ctermbg=yellow
+
+hi Comment      ctermfg=darkcyan
+hi Constant     ctermfg=red
+hi Identifier   ctermfg=magenta
+hi Statement    ctermfg=yellow
+hi PreProc      ctermfg=red
+hi Type         ctermfg=yellow
+hi Special      ctermfg=cyan
+hi Underlined   ctermfg=blue     cterm=underline
+hi Ignore       ctermfg=darkgrey
+hi Error        ctermfg=white    ctermbg=red
+hi Todo         ctermfg=red      ctermbg=yellow
 
 
 " To save all the buffer-local maps for the current buffer
