@@ -1,4 +1,8 @@
 set encoding=utf-8
+scriptencoding utf-8
+
+" save as root
+command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
 
 " Disable compatibility with vi which can cause unexpected issues.
 set nocompatible
@@ -91,6 +95,7 @@ set statusline +=%2*%m%*                			 "modified flag
 set statusline +=%1*%=%5l%*             			 "current line
 set statusline +=%1*/%L%*               		     "total lines
 set statusline +=%1*%4v\ %*             			 "virtual column number
+set statusline +=%5*:H=?\ %*						 " :H for Help
 set statusline +=%3*0x%04B\ %*    			 		 "character under cursor
 set statusline +=%7*%p%%\ %*                 		 "percent from file
 
@@ -126,3 +131,62 @@ function! StatuslineMode()
   endif
 endfunction
 
+" F2 schaltet zwischen relativen und absoluten Zeilennummern
+nnoremap <F2> :set relativenumber! number!<CR>
+
+" Eigene Hilfe mit :H anzeigen
+function! ShowVimHelp()
+  echohl Title
+  echo "📝 Vi-Hilfe – Nützliche Befehle"
+  echohl None
+
+  echo "🔹 Navigation:"
+  echo "  gg        – Anfang der Datei"
+  echo "  G         – Ende der Datei"
+  echo "  ^         – erstes Zeichen der Zeile"
+  echo "  $         – Ende der Zeile"
+  echo "  w / b     – vor / zurück Wortweise"
+  echo "  %         – zum passenden Klammerzeichen springen"
+
+  echo "🔹 Bearbeiten:"
+  echo "  dG        – ab Cursor bis Dateiende löschen"
+  echo "  dgg       – ab Cursor bis Datei-Anfang löschen"
+  echo "  d{motion} – löschen (z. B. d3j = 3 Zeilen)"
+  echo "  ggdG      – ganze Datei löschen 😬"
+  echo "  y{motion} – kopieren (yank)"
+  echo "  yy        – aktuelle Zeile kopieren"
+  echo "  p         – nach Cursor einfügen"
+  echo "  cw  		– löscht das Wort ab Cursor und startet den Einfügemodus"
+  echo "  c$  		– löscht ab Cursor bis zum Zeilenende und startet den Einfügemodus"
+  echo "  >> / <<   – Einrücken / Ausrücken"
+  
+  echo "🔹 Bereich kopieren & speichern:" |
+  echo "  :133,186y +     – Zeilen 133 bis 186 in die Systemzwischenablage kopieren"
+  echo "  :133,186w datei – Zeilen 133 bis 186 in eine Datei 'datei' schreiben"
+  echo "  :133,186y       – Zeilen 133 bis 186 ins Vim-internen Register kopieren"
+
+  echo "🔹 Visual & Block-Modus:"
+  echo "  v / V     – Zeichen- / Zeilenweise markieren"
+  echo "  Ctrl-v    – Blockweise markieren (rechteckig)"
+  echo "  ggVGy     – alles markieren & kopieren"
+
+  echo "🔹 Rückgängig / Wiederherstellen:"
+  echo "  u         – Rückgängig machen"
+  echo "  Ctrl-R    – Wiederholen (Redo)"
+
+  echo "🔹 Suchen:"
+  echo "  /text     – suche nach 'text'"
+  echo "  n / N     – nächstes / vorheriges Ergebnis"
+  echo "  :%s/ALT/NEU/g   – ersetzen in ganzer Datei"
+  echo "  :s/ALT/NEU/g    – ersetzen in aktueller Zeile"
+  echo "  :%s/ALT/NEU/gc  – mit Bestätigung"
+
+  echo "🔹 Verschiedenes:"
+  echo "  :split datei  – Datei öffnen, geteiltes Fenster"
+  echo "  Ctrl-w w      – Zwischen geteilten Fenstern wechseln"
+  echo "  :w !sudo tee % → als root speichern"
+  echo "  :!cmd         – externen Shell-Befehl ausführen"
+  echo "  F2            – relativenumber toggeln"
+endfunction
+
+command! H call ShowVimHelp()
